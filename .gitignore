@@ -1,0 +1,4 @@
+# Ignore node_modules everywhere
+node_modules/
+frontend/Skillbridge/node_modules/
+backend/node_modules/

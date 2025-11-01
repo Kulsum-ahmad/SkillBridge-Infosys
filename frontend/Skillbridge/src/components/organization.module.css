@@ -1,0 +1,263 @@
+/* =================================
+ * BASE & LAYOUT STYLES (Global or Near-Global)
+ * NOTE: These top-level styles should ideally be in a global CSS file, 
+ * but are kept here for a complete file conversion.
+ * ================================= */
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* =================================
+ * COMPONENT-SPECIFIC STYLES
+ * All class names are now locally scoped.
+ * ================================= */
+
+.main {
+  height: 100vh; /* Keep 100vh to ensure it covers the screen */
+  background-color: #f9fafb; /* Light gray background */
+  display: flex;
+  align-items: center; /* Vertically center the form */
+  justify-content: center; /* Horizontally center the form */
+  padding: 1rem;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Form Card Container */
+.formPage { /* Changed from .form-page to match React component usage: styles.formPage */
+  max-width: 650px; 
+  width: 80%; 
+  height: 90vh;
+  max-height: 95vh;
+  background-color: #ffffff;
+  padding: 1.5rem; 
+  border-radius: 0.75rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: 1px solid #f3f4f6;
+  position: relative; 
+}
+
+/* Back Button Styling (Assuming this is inside the separate <Button /> component, if it is used here, the class name should be updated in the JSX too) 
+Since the JSX shows only `<Button />` without a class, I'll keep the back-arrow class for reference, but note its usage is in the `Button` component, which isn't provided. */
+.backArrow { /* Changed from .back-arrow to match common JS/JSX style (camelCase) for module classes */
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    padding: 0.5rem;
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    width: 2.5rem; 
+    height: 2.5rem;
+    font-size: 1.25rem;
+    color: #374151;
+    transition: background-color 150ms;
+}
+
+/* =================================
+ * HEADER STYLES
+ * ================================= */
+
+.header {
+  text-align: center;
+  margin-bottom: 1.5rem; /* Reduced margin */
+  line-height: 1;
+  padding-top: 1.5rem; /* Reduced padding from 2rem to save space */
+}
+
+/* SkillBridge Logo Image */
+.skillb {
+    margin-left: auto;
+    margin-right: auto;
+    height: 3rem; /* Increased from 2.5rem */
+    margin-bottom: 0;
+    margin-top: -2rem;
+    border-radius: 50%;
+    object-fit: contain; 
+}
+
+.header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-top: 0rem; 
+  margin-bottom: 0.3rem;
+}
+
+.header p {
+  color: #4a4d52;
+  font-size: 0.9rem;
+  margin-top: 0;
+  margin-bottom: 2rem;
+}
+
+
+/* =================================
+ * FORM FIELDS STYLES
+ * ================================= */
+
+.formFields { /* Changed from .form-fields to match React component usage: styles.formFields */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.5rem; /* Reduced vertical gap to save space */
+  margin: 0;
+  padding: 0 1.5rem; 
+}
+
+.formGroup { /* Changed from .form-group to match React component usage: styles.formGroup */
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem; /* Slightly reduced gap */
+}
+
+.formGroup p { 
+  font-size: 1rem;
+  font-weight: 500;
+  color: #374151;
+  margin: 0; 
+}
+
+.formFields input {
+  width: 100%; 
+  padding: 0.625rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: all 150ms;
+  color: #1f2937;
+  margin: 0; 
+  background-color: #ffffff;
+}
+
+/* =================================
+ * BUTTON STYLES
+ * ================================= */
+
+.createaccount {
+    width: 60%;
+    padding: 0.75rem;
+    margin-top: 1.5rem;
+    color: #ffffff;
+    font-size: 1.125rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    /* Gradient: bg-gradient-to-r from-purple-600 to-indigo-600 */
+    background-image: linear-gradient(to right, #7c3aed, #4f46e5); 
+    transition: all 200ms;
+    border: none;
+    cursor: pointer;
+    display: block;
+    margin-left: auto;
+    margin-bottom: 1rem;
+    margin-right: auto;
+}
+.createaccount:hover {
+    /* Hover Gradient */
+    background-image: linear-gradient(to right, #6d28d9, #4338ca);
+}
+.createaccount:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.5);
+}
+
+.footerText { /* Changed from .footer-text to match React component usage: styles.footerText */
+    text-align: center;
+    font-size: 1rem;
+    color: #4b5563;
+    margin-top: 0.3rem;
+    margin-bottom: -2rem;
+}
+.footerText a {
+    font-weight: 500;
+    color: #4f46e5;
+    margin-left: 0.25rem;
+    text-decoration: none;
+}
+.footerText a:hover {
+    color: #4338ca;
+    text-decoration: underline;
+}
+
+.footerCopyright { /* Changed from .footer-copyright to match React component usage: styles.footerCopyright */
+    text-align: center;
+    font-size: 0.875rem;
+    color: #9ca3af;
+    margin-top: 2.3rem;
+    margin-bottom: 0;
+}
+
+/* =================================
+ * UTILITY/HELPER STYLES
+ * ================================= */
+
+.passwordChecklist { /* Changed from .password-checklist */
+  list-style: none;
+  padding-left: 0;
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.passwordChecklist li { /* Target element inside the component's scope */
+  margin-bottom: 4px;
+}
+
+.valid {
+  color: green;
+}
+
+.invalid {
+  color: red;
+}
+
+.inputError { /* Changed from .input-error to match React component usage: styles.inputError */
+  border: 1px solid red;
+}
+
+.passwordHint { /* Changed from .password-hint to match React component usage: styles.passwordHint */
+  font-size: 13px; /* Reduced from 14px to 13px */
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.inputWrapper { /* Changed from .input-wrapper to match React component usage: styles.inputWrapper */
+  position: relative;
+}
+
+.inputWrapper input { /* Target element inside the component's scope */
+  width: 100%;
+  padding-right: 30px;
+}
+
+.tick {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: green;
+  font-size: 18px;
+}
+
+.loginLink{
+  cursor: pointer; 
+  background: none; 
+  border: none; 
+  padding: 0; 
+  padding-left: 0.5rem;
+  color: #4F46E5; 
+}
+
+.loginLink:hover{
+  text-decoration: underline;
+}

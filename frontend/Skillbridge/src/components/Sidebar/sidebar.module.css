@@ -1,0 +1,138 @@
+/* frontend/src/components/Sidebar/Sidebar.module.css */
+
+/* --- GENERAL LAYOUT & BRANDING (keep these from before) --- */
+.sidebar {
+  width: 250px;
+  min-height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #ffffff;
+  border-right: 1px solid #e0e0e0;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column; /* Important for pushing logout to the bottom */
+}
+
+.brand {
+  padding: 0 20px 30px 20px;
+  border-bottom: 1px solid #f0f0f0; 
+  display: flex;
+  align-items: center;
+}
+
+.logoContainer {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.5rem;
+}
+
+.logoText {
+  font-size: 24px;
+  font-weight: 700;
+  color: #5d5cff;
+  margin-right: 8px;
+}
+
+/* --- PORTAL TITLE --- */
+.portalTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: #a0a0a0; /* Lighter gray color */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 20px 20px 10px 20px;
+  margin: 0;
+}
+
+/* --- NAVIGATION LINKS (keep these from before) --- */
+.nav {
+  flex-grow: 1; /* Pushes the logout section to the bottom */
+}
+
+.nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: #333333;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.2s, color 0.2s;
+  border-radius: 0; /* Remove rounding, links go edge-to-edge in the video */
+  margin: 0;
+}
+
+.navLink:hover {
+  background-color: #f4f4ff; 
+  color: #5d5cff;
+}
+
+.icon {
+  margin-right: 10px;
+  width: 20px;
+  text-align: center;
+}
+
+/* --- ACTIVE LINK STYLES (MATCHES VIDEO) --- */
+.active {
+  background-color: #5d5cff; 
+  color: #ffffff; 
+  font-weight: 600;
+  /* Add the small left bar style */
+  border-left: 5px solid #5d5cff; /* Left highlight bar */
+  padding-left: 15px; /* Adjust padding due to the new border */
+}
+
+.active:hover {
+  background-color: #5d5cff;
+  color: #ffffff;
+}
+
+/* --- LOGOUT SECTION --- */
+.logoutSection {
+    padding: 20px 20px; 
+    border-top: 1px solid #f0f0f0;
+}
+
+.logoutIcon{
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+    display: inline-block; 
+    vertical-align: middle; 
+    margin-left: 1px;
+}
+
+.logoutLink {
+    text-decoration: none;
+    color: #333333;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 10px 0;
+    transition: color 0.2s;
+    cursor: pointer;
+    margin-left: 10px; 
+}
+
+.logoutLink:hover {
+    color: #ff0000; 
+}
+
+.logoutText {
+    line-height: 1.2; 
+}

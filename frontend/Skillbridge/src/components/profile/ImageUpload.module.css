@@ -1,0 +1,109 @@
+/* ImageUpload.module.css */
+
+/* --- Main Structure --- */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; /* space-y-2 */
+}
+
+.label {
+  /* text-foreground (assuming a dark text color) */
+  color: #1a1a1a; 
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.contentWrapper {
+  display: flex; /* flex */
+  align-items: center; /* items-center */
+  gap: 1rem; /* gap-4 */
+}
+
+/* --- Image Preview Area --- */
+.imageWrapper {
+  position: relative; /* relative */
+}
+
+.imagePlaceholder {
+  width: 6rem; /* w-24 */
+  height: 6rem; /* h-24 */
+  border-radius: 9999px; /* rounded-full */
+  background-color: #f3f4f6; /* bg-muted (a light grey) */
+  display: flex; /* flex */
+  align-items: center; /* items-center */
+  justify-content: center; /* justify-center */
+  overflow: hidden; /* overflow-hidden */
+  border: 2px solid #e5e7eb; /* border-2 border-border */
+}
+
+.imagePreview {
+  width: 100%; /* w-full */
+  height: 100%; /* h-full */
+  object-fit: cover; /* object-cover */
+}
+
+.defaultIcon {
+  width: 3rem; /* w-12 */
+  height: 3rem; /* h-12 */
+  color: #9ca3af; /* text-muted-foreground (a medium grey) */
+}
+
+/* --- Remove Button (X) --- */
+.removeButton {
+  position: absolute; /* absolute */
+  top: -0.5rem; /* -top-2 */
+  right: -0.5rem; /* -right-2 */
+  background-color: #ef4444; /* bg-destructive (red) */
+  color: white; /* text-destructive-foreground */
+  border-radius: 9999px; /* rounded-full */
+  padding: 0.25rem; /* p-1 */
+  transition: transform 150ms ease-in-out; /* transition-transform */
+  border: none;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.removeButton:hover {
+  transform: scale(1.1); /* hover:scale-110 */
+}
+
+.removeIcon {
+  width: 1rem; /* w-4 */
+  height: 1rem; /* h-4 */
+}
+
+/* --- Upload Area --- */
+.uploadArea {
+  flex: 1; /* flex-1 */
+}
+
+.hiddenInput {
+  display: none; /* hidden */
+}
+
+.uploadButton {
+  /* hover:bg-accent hover:shadow-md transition-all */
+  transition: all 150ms ease-in-out;
+  display: flex;
+  align-items: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.uploadButton:hover {
+  background-color: #f3f4f6; /* hover:bg-accent */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); /* hover:shadow-md */
+}
+
+.uploadIcon {
+  width: 1rem; /* w-4 */
+  height: 1rem; /* h-4 */
+  margin-right: 0.5rem; /* mr-2 */
+}
+
+.hintText {
+  color: #9ca3af; /* text-muted-foreground */
+  margin-top: 0.5rem; /* mt-2 */
+  font-size: 0.875rem;
+}

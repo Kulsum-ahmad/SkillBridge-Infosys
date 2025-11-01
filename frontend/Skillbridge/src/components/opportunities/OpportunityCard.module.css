@@ -1,0 +1,211 @@
+/* OpportunityCard.module.css */
+
+/* --- Card Structure & Hover State --- */
+:root {
+  --color-primary: #7c3aed; /* Primary Purple */
+  --color-secondary-badge: #f3f4f6; /* Badge secondary background */
+  --color-text-muted: #6b7280; /* text-muted-foreground */
+  --color-text-card-foreground: #1f2937; /* Card title text */
+  --color-border-default: #e5e7eb; /* border-border */
+  --color-hover-destructive: #ef4444; /* Red color */
+  --color-muted-bg: rgba(243, 244, 246, 0.5); /* bg-muted/20 */
+}
+
+.card {
+  /* hover:shadow-xl transition-all duration-200 hover:-translate-y-1 group border-l-4 border-l-primary */
+  transition: all 0.2s ease-in-out;
+  border-left: 4px solid var(--color-primary);
+  /* The Card component likely handles its base styling (white background, border, etc.) */
+}
+
+.card:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); /* hover:shadow-xl */
+  transform: translateY(-4px); /* hover:-translate-y-1 (converted to px) */
+}
+
+/* --- Card Header --- */
+.cardHeader {
+  padding-bottom: 0.75rem; /* pb-3 */
+}
+
+.headerContent {
+  display: flex; /* flex */
+  align-items: flex-start; /* items-start */
+  justify-content: space-between; /* justify-between */
+  gap: 0.5rem; /* gap-2 */
+}
+
+.titleWrapper {
+  flex: 1; /* flex-1 */
+}
+
+.title {
+  color: var(--color-text-card-foreground);
+  margin-bottom: 0.5rem; /* mb-2 */
+  font-size: 1.125rem; /* h3 size approximation */
+  font-weight: 600;
+}
+
+.categoryBadge {
+  /* hover:bg-primary/10 hover:text-primary transition-colors */
+  background-color: var(--color-secondary-badge);
+  transition: all 0.2s ease-in-out;
+}
+
+.categoryBadge:hover {
+  background-color: rgba(124, 58, 237, 0.1); /* primary/10 */
+  color: var(--color-primary);
+}
+
+/* --- Action Buttons (Edit/Delete) --- */
+.actionButtons {
+  display: flex; /* flex */
+  gap: 0.5rem; /* gap-2 */
+  opacity: 0; /* opacity-0 */
+  transition: opacity 0.2s ease-in-out; /* transition-opacity */
+}
+
+.card:hover .actionButtons {
+  opacity: 1; /* group-hover:opacity-100 */
+}
+
+.editButton,
+.deleteButton {
+  padding: 0.5rem; /* p-2 */
+  border-radius: 0.5rem; /* rounded-lg */
+  color: var(--color-text-muted); /* text-muted-foreground */
+  transition: all 0.2s ease-in-out;
+}
+
+.actionIcon {
+  width: 1rem; /* w-4 */
+  height: 1rem; /* h-4 */
+}
+
+.editButton:hover {
+  background-color: rgba(124, 58, 237, 0.1); /* hover:bg-primary/10 */
+  color: var(--color-primary); /* hover:text-primary */
+  transform: scale(1.1); /* hover:scale-110 */
+}
+
+.deleteButton:hover {
+  background-color: rgba(239, 68, 68, 0.1); /* hover:bg-destructive/10 */
+  color: var(--color-hover-destructive); /* hover:text-destructive */
+  transform: scale(1.1); /* hover:scale-110 */
+}
+
+/* --- Card Content --- */
+.cardContent {
+  padding-bottom: 0.75rem; /* pb-3 */
+}
+
+.description {
+  color: var(--color-text-muted); /* text-muted-foreground */
+  margin-bottom: 1rem; /* mb-4 */
+  /* line-clamp-2 equivalent (requires vendor prefixes for true cross-browser support) */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.detailsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; /* space-y-2 */
+}
+
+.detailItem {
+  display: flex; /* flex */
+  align-items: center; /* items-center */
+  gap: 0.5rem; /* gap-2 */
+}
+
+.iconBox {
+  padding: 0.375rem; /* p-1.5 */
+  border-radius: 0.25rem; /* rounded-md */
+}
+
+.icon {
+  width: 1rem; /* w-4 */
+  height: 1rem; /* h-4 */
+}
+
+.detailText {
+  color: var(--color-text-card-foreground);
+  font-size: 0.875rem;
+}
+
+/* Specific Icon Box Colors */
+.iconBoxOrange {
+  background-color: #fff7ed; /* bg-orange-50 */
+}
+.iconOrange {
+  color: #f97316; /* text-orange-500 */
+}
+
+.iconBoxBlue {
+  background-color: #eff6ff; /* bg-blue-50 */
+}
+.iconBlue {
+  color: #3b82f6; /* text-blue-500 */
+}
+
+.iconBoxPurple {
+  background-color: #f3f0ff; /* bg-purple-50 */
+}
+.iconPurple {
+  color: #8b5cf6; /* text-purple-500 */
+}
+
+
+/* --- Card Footer --- */
+.cardFooter {
+  padding-top: 0.75rem; /* pt-3 */
+  border-top: 1px solid var(--color-border-default); /* border-t border-border */
+  background-color: var(--color-muted-bg); /* bg-muted/20 */
+}
+
+.footerContent {
+  display: flex; /* flex */
+  align-items: center; /* items-center */
+  justify-content: space-between; /* justify-between w-full */
+  width: 100%;
+}
+
+.statusDisplay {
+  display: flex; /* flex */
+  align-items: center; /* items-center */
+  gap: 0.5rem; /* gap-2 */
+}
+
+.statusDot {
+  width: 0.625rem; /* w-2.5 */
+  height: 0.625rem; /* h-2.5 */
+  border-radius: 9999px; /* rounded-full */
+  /* animate-pulse animation definition (optional but good practice) */
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.statusText {
+  color: var(--color-text-card-foreground);
+  text-transform: capitalize; /* capitalize */
+  font-size: 0.875rem;
+}
+
+/* Dynamic Status Dot Colors */
+.statusDotActive {
+  background-color: var(--color-primary); /* bg-primary */
+}
+
+.statusDotDraft {
+  background-color: #f59e0b; /* bg-yellow-500 */
+}
+
+.statusDotClosed {
+  background-color: #9ca3af; /* bg-gray-400 */
+}

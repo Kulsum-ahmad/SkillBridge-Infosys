@@ -1,0 +1,206 @@
+.pageContainer {
+  background: #faf7ff;
+  min-height: 100vh;
+}
+
+/* Header */
+.banner {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: white;
+  padding: 2rem 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  position: relative;
+}
+
+.backBtn {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  background: none;
+  color: white;
+  border: none;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+.bannerText {
+  text-align: center;
+  flex: 1;
+}
+
+.title {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.subtitle {
+  opacity: 0.9;
+}
+
+/* Layout */
+.contentWrapper {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2.5rem;
+  padding: 3rem;
+}
+
+/* Form Section */
+.formSection {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.formSection h2 {
+  font-size: 1.3rem;
+  color: #6b21a8;
+}
+
+.instructions {
+  color: #4b5563;
+  margin-bottom: 1.5rem;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: #333;
+}
+
+.formGroup input,
+.formGroup textarea {
+  width: 100%;
+  padding: 0.7rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+}
+
+.formGroup small {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+/* Upload Box */
+.uploadBox {
+  border: 2px dashed #c4b5fd;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  color: #6b21a8;
+  background: #faf5ff;
+  margin-bottom: 1.5rem;
+}
+
+.uploadIcon {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.uploadBox span {
+  color: #7c3aed;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.uploadBox small {
+  display: block;
+  color: #6b7280;
+  font-size: 0.8rem;
+}
+
+/* Buttons */
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.cancelBtn {
+  flex: 1;
+  background: #f3e8ff;
+  color: #6b21a8;
+  border: none;
+  padding: 0.8rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.cancelBtn:hover {
+  background: #e9d5ff;
+}
+
+.submitBtn {
+  flex: 1;
+  background: #7c3aed;
+  color: white;
+  border: none;
+  padding: 0.8rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.submitBtn:hover {
+  background: #5b21b6;
+}
+
+/* Sidebar */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.summaryCard,
+.tipsCard {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.summaryCard h3,
+.tipsCard h3 {
+  color: #6b21a8;
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+}
+
+.summaryCard h4 {
+  font-size: 1rem;
+  color: #111;
+  margin-bottom: 0.5rem;
+}
+
+.summaryDetails p {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #4b5563;
+  margin: 0.3rem 0;
+}
+
+.tipsCard ul {
+  padding-left: 1rem;
+  color: #4b5563;
+}
+
+.tipsCard li {
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+}

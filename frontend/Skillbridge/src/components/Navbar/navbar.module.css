@@ -1,0 +1,358 @@
+/* ========================================
+   NAVBAR CONTAINER
+   ======================================== */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 15px 30px;
+    background-color: #ffffff;
+    min-height: 80px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* ========================================
+   LEFT SECTION - TITLE AND MODE
+   ======================================== */
+.leftSection {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.titleContainer {
+    position: relative;
+    padding-bottom: 5px;
+}
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.profileAvatar {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+    margin-top: 0.5rem;
+}
+
+.titleContainer::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60%;
+    height: 3px;
+    background-color: #5d5cff;
+    border-radius: 2px;
+}
+
+/* ========================================
+   MODE STATUS SECTION
+   ======================================== */
+.modeStatusContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    margin-top: 1rem;
+}
+
+.modeLabel {
+    font-size: 16px;
+    color: #555;
+    font-weight: 500;
+}
+
+.statusPill {
+    border: none;
+    padding: 6px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 20px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.statusVolunteer {
+    background-color: #5d5cff;
+    color: #fff;
+}
+
+.statusVolunteer:hover {
+    background-color: #4a4ae6;
+    transform: translateY(-1px);
+}
+
+.statusNGO {
+    background-color: #5d5cff;
+    color: #ffffff;
+}
+
+.statusNGO:hover {
+    background-color: #4a4ae6;
+    transform: translateY(-1px);
+}
+
+/* ========================================
+   RIGHT SECTION - ICONS AND PROFILE
+   ======================================== */
+.rightSection {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    align-self: flex-start;
+    margin-top: 10px;
+}
+
+.iconWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.iconLink {
+    color: #777;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s;
+    text-decoration: none;
+}
+
+.iconLink:hover {
+    background-color: #e8e8e8;
+    color: #5d5cff;
+}
+
+/* ========================================
+   PROFILE DROPDOWN SECTION
+   ======================================== */
+.profileWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.profileButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+
+.profileButton:hover {
+    background-color: #f5f5f5;
+}
+
+.profileButton:focus {
+    outline: 2px solid #5d5cff;
+    outline-offset: 2px;
+}
+
+/* SIMPLE PROFILE AVATAR - Shows first letter of name */
+.profileAvatar {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    border-radius: 50%;
+    background-color: #5d5cff;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 600;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+/* Chevron rotation animation */
+.chevronOpen {
+    transform: rotate(180deg);
+}
+
+.profileButton svg {
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+/* ========================================
+   DROPDOWN MENU
+   ======================================== */
+.dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    padding: 8px 0;
+    z-index: 1000;
+    animation: dropdownFadeIn 0.2s ease;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdownItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: #333;
+    text-decoration: none;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-family: inherit;
+}
+
+.dropdownItem:hover {
+    background-color: #f5f5f5;
+}
+
+.dropdownItem:focus {
+    outline: none;
+    background-color: #f0f0f0;
+}
+
+.dropdownItem svg {
+    flex-shrink: 0;
+}
+
+.logoutButton {
+    color: #dc3545;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 4px;
+    padding-top: 16px;
+}
+
+.logoutButton:hover {
+    background-color: #fff5f5;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px 20px;
+        min-height: auto;
+    }
+
+    .leftSection {
+        width: 100%;
+    }
+
+    .rightSection {
+        width: 100%;
+        justify-content: flex-end;
+        align-self: flex-end;
+        margin-top: 0;
+    }
+
+    .title {
+        font-size: 20px;
+    }
+
+    .modeLabel {
+        font-size: 14px;
+    }
+
+    .modeStatusContainer {
+        margin-top: 0.5rem;
+    }
+
+    .dropdown {
+        right: 0;
+        left: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        padding: 12px 15px;
+    }
+
+    .title {
+        font-size: 18px;
+    }
+
+    .modeLabel {
+        font-size: 13px;
+    }
+
+    .statusPill {
+        font-size: 12px;
+        padding: 4px 10px;
+    }
+
+    .profileAvatar {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        min-height: 36px;
+        font-size: 16px;
+    }
+
+    .iconLink {
+        padding: 6px;
+    }
+
+    .dropdown {
+        min-width: 180px;
+    }
+
+    .dropdownItem {
+        padding: 10px 14px;
+        font-size: 13px;
+    }
+    .profileAvatar svg {
+    color: #ffffff;
+}
+
+}

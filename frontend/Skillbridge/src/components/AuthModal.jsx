@@ -117,12 +117,17 @@ export default function AuthModal({ isOpen, onClose, type, userType, onAuthSucce
         }
         
         try {
-            // TODO: Implement forgot password API call when backend endpoint is ready
-            console.log('Forgot password submitted for:', formData.email);
-            toast.info("Password reset link will be sent to your email if an account exists.");
+            const emailNormalized = formData.email?.trim().toLowerCase();
+            const res = await axios.post('http://localhost:5000/api/auth/forgot-password', {
+                email: emailNormalized,
+            });
+            
+            toast.success(res.data?.message || "Password reset link has been sent to your email.");
             setCurrentStep('form');
+            setFormData(prev => ({ ...prev, email: '' }));
         } catch (error) {
-            toast.error("Failed to send password reset email. Please try again.");
+            const errorMsg = error.response?.data?.message || "Failed to send password reset email. Please try again.";
+            toast.error(errorMsg);
         }
     };
 

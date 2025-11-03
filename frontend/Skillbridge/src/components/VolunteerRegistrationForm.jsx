@@ -9,7 +9,7 @@ import Button from "./Button";
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@_]).{8,}$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const VolunteerRegistrationForm = ({ onLoginClick }) => {
+const VolunteerRegistrationForm = ({ onLoginClick, onAuthSuccess }) => {
   const [formData, setFormData] = useState({
     fullName: "",
     username: "",
@@ -89,16 +89,21 @@ const VolunteerRegistrationForm = ({ onLoginClick }) => {
       });
 
       setIsPasswordValid(false);
-      toast.success(res.data?.message || "Registered successfully!");
 
       if (token) {
         localStorage.setItem("sb_token", token);
         localStorage.setItem("sb_user", JSON.stringify(res.data?.user || {}));
 
-        // Redirect after a short delay for better UX
-        setTimeout(() => {
-          navigate("/volunteer/dashboard", { replace: true });
-        }, 1000);
+        toast.success(res.data?.message || "Registered successfully!");
+        
+        if (onAuthSuccess) {
+          onAuthSuccess('volunteer');
+        } else {
+          // Redirect after a short delay for better UX
+          setTimeout(() => {
+            navigate("/dashboard", { replace: true });
+          }, 1000);
+        }
       } else {
         toast.info("Please login to continue.");
       }

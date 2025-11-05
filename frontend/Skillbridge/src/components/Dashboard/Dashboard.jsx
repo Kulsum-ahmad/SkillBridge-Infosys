@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Loader, Building2, Mail, Globe, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
+import MessagePopup from '../MessagePopup.jsx';
 
 // --- Centralized API Logic ---
 const api = axios.create({
@@ -656,6 +657,7 @@ const Dashboard = () => {
                 <RecentActivity activities={dashboardData.recentActivity} />
                 <UpcomingEvents events={dashboardData.upcomingEvents} isNGO={isNGO} />
             </div>
+            <MessagePopup />
         </div>
     );
 };

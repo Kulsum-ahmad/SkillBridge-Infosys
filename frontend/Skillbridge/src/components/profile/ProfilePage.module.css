@@ -1,0 +1,203 @@
+.container {
+  max-width: 48rem; /* max-w-4xl */
+  margin-left: auto; /* mx-auto */
+  margin-right: auto;
+  padding: 1.5rem; /* p-6 */
+}
+
+.profileCard {
+  background-color: white; 
+  border: 1px solid #e5e7eb; /* border-gray-200, or a theme-defined 'border' color */
+  border-radius: 0.5rem; /* rounded-lg */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+}
+
+/* --- Tabs Styling --- */
+.tabsWrapper {
+  width: 100%; /* w-full */
+}
+
+.tabsList {
+  width: 100%; /* w-full */
+  justify-content: flex-start; /* justify-start */
+  border-bottom: 1px solid #e5e7eb; /* border-b */
+  border-radius: 0; /* rounded-none */
+  height: auto; /* h-auto */
+  padding: 0; /* p-0 */
+  background-color: transparent; /* bg-transparent */
+  display: flex; /* flex */
+}
+
+.tabTrigger {
+  /* Common styles for TabsTrigger */
+  border-radius: 0; /* rounded-none */
+  border-bottom: 2px solid transparent; /* border-b-2 border-transparent */
+  padding: 0.75rem 1.5rem; /* px-6 py-3 */
+  transition: all 150ms ease-in-out; /* transition-all */
+  cursor: pointer;
+  background: none;
+  border-color: transparent;
+  text-decoration: none;
+}
+
+/* Styling for the active tab (data-[state=active]) */
+.tabTrigger[data-state='active'] {
+  border-bottom-color: #7c3aed; /* data-[state=active]:border-primary (Assuming #7c3aed is your primary color) */
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.tabTrigger:hover {
+  background-color: #f3f4f6; /* hover:bg-accent (Assuming a light gray accent color) */
+}
+
+.tabsContentContainer {
+  padding: 1.5rem; /* p-6 */
+}
+
+.tabContent {
+  /* space-y-6 mt-0 */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; 
+  margin-top: 0;
+}
+
+/* --- Form Fields --- */
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  padding-left: 1rem;
+}
+
+.inputStyle {
+  transition: border-color 150ms ease-in-out;
+  padding-left: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+/* Error/Validation Styles */
+.inputError {
+  border-color: #ef4444 !important; /* border-destructive */
+}
+
+.errorText {
+  color: #ef4444; /* text-destructive */
+  font-size: 0.875rem;
+}
+
+.successText {
+  color: #8b5cf6; /* text-purple-600 */
+  display: flex;
+  align-items: center;
+  gap: 0.25rem; /* gap-1 */
+  font-size: 0.875rem;
+}
+
+.iconSmall {
+  width: 1rem; /* w-4 */
+  height: 1rem; /* h-4 */
+}
+
+/* --- Skills Section --- */
+.skillInputWrapper {
+  display: flex; /* flex */
+  gap: 0.5rem; /* gap-2 */
+}
+
+.addButton {
+  /* hover:shadow-md transition-all. The base button style comes from the component. */
+  transition: box-shadow 150ms ease-in-out, transform 150ms ease-in-out;
+}
+
+.skillBadgeContainer {
+  display: flex; /* flex */
+  flex-wrap: wrap; /* flex-wrap */
+  gap: 0.5rem; /* gap-2 */
+  margin-top: 0.75rem; /* mt-3 */
+}
+
+.skillBadge {
+  /* px-3 py-1 hover:bg-secondary/80 transition-colors. Base comes from Badge component. */
+  padding: 0.25rem 0.75rem;
+  transition: background-color 150ms ease-in-out;
+}
+
+.removeSkillButton {
+  margin-left: 0.5rem; /* ml-2 */
+  transition: color 150ms ease-in-out; /* transition-colors */
+}
+
+.removeSkillButton:hover {
+  color: #ef4444; /* hover:text-destructive */
+}
+
+.iconTiny {
+  width: 0.75rem; /* w-3 */
+  height: 0.75rem; /* h-3 */
+}
+
+/* --- Bio/Textarea --- */
+.textareaStyle {
+  resize: none;
+  transition: border-color 150ms ease-in-out;
+  padding: 1rem;
+}
+
+.bioFooter {
+  display: flex; /* flex */
+  justify-content: space-between; /* justify-between */
+  align-items: center; /* items-center */
+}
+
+.mutedText {
+  color: #9ca3af; /* text-muted-foreground (a light grey color) */
+  font-size: 0.875rem;
+}
+
+/* --- Footer --- */
+.saveFooter {
+  border-top: 1px solid #e5e7eb; /* border-t border-border */
+  padding: 1.5rem; /* p-6 */
+  display: flex; /* flex */
+  justify-content: flex-end; /* justify-end */
+  gap: 0.75rem; /* gap-3 */
+}
+
+.cancelButton {
+  transition: all 150ms ease-in-out;
+  padding: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.saveButton {
+  /* hover:shadow-lg hover:scale-105 transition-all */
+  transition: all 150ms ease-in-out;
+}
+
+.saveButton:hover{
+    cursor: pointer;
+}
+
+/* --- Confirmation Dialog --- */
+.confirmationIconWrapper {
+  display: flex; /* flex */
+  justify-content: center; /* justify-center */
+  margin-bottom: 1rem; /* mb-4 */
+}
+
+.confirmationIcon {
+  width: 4rem; /* w-16 */
+  height: 4rem; /* h-16 */
+  color: #8b5cf6; /* text-purple-500 */
+}
+
+.confirmationTitle {
+  text-align: center; /* text-center */
+}
+
+.confirmationDescription {
+  text-align: center; /* text-center */
+}

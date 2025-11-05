@@ -1,0 +1,151 @@
+.pageContainer {
+  background: #faf7ff;
+  min-height: 100vh;
+}
+
+.banner {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: white;
+  padding: 2rem 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+
+.backBtn {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  background: none;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+.bannerContent {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.orgImage {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.title {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.orgName {
+  opacity: 0.9;
+}
+
+.bannerApplyBtn {
+  background: white;
+  color: #7c3aed;
+  border: none;
+  border-radius: 10px;
+  padding: 0.6rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.contentWrapper {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  padding: 3rem;
+}
+
+.infoCards {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #4b5563;
+}
+
+.card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
+}
+
+.card h2 {
+  font-size: 1.2rem;
+  color: #6b21a8;
+  margin-bottom: 0.8rem;
+}
+
+.card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.card li {
+  padding: 0.3rem 0;
+  color: #374151;
+}
+
+.skills span {
+  background: #ede9fe;
+  color: #6b21a8;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  margin-right: 0.4rem;
+  font-weight: 500;
+}
+
+.sidebar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sidebarCard {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 320px;
+  position: sticky;
+  top: 2rem;
+}
+
+.sidebarInfo p {
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.3rem 0;
+}
+
+.applyBtn {
+  background: #7c3aed;
+  color: white;
+  border: none;
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 10px;
+  font-weight: 600;
+  margin-top: 1rem;
+  cursor: pointer;
+}
+
+.tip {
+  font-size: 0.85rem;
+  margin-top: 1rem;
+  background: #faf5ff;
+  color: #6b21a8;
+  padding: 0.6rem;
+  border-radius: 8px;
+}

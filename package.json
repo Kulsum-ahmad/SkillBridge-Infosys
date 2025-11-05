@@ -1,0 +1,30 @@
+{
+  "name": "skillbridge-group2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "server": "cd backend && node app.js",
+    "client": "npm run dev --prefix frontend/Skillbridge",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/springboardmentor212/SkillBridge-Group2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/springboardmentor212/SkillBridge-Group2/issues"
+  },
+  "homepage": "https://github.com/springboardmentor212/SkillBridge-Group2#readme",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "multer": "^2.0.2",
+    "react-router-dom": "^7.9.4"
+  }
+}

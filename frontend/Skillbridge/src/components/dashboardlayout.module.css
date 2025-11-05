@@ -1,0 +1,22 @@
+/* frontend/src/components/DashboardLayout.module.css */
+
+.layoutContainer {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f7f7f7; /* Light gray background for the main canvas */
+}
+
+/* This width must match the width defined in Sidebar.module.css (250px) */
+.mainContentWrapper {
+  flex-grow: 1; /* Takes up all remaining horizontal space */
+  margin-left: 250px; /* Pushes the content wrapper past the fixed sidebar */
+  display: flex;
+  flex-direction: column;
+}
+
+/* The area where the Dashboard, Profile Editing, etc., content goes */
+.pageContent {
+  /* Padding for content inside the main area, below the Navbar */
+  padding: 30px; 
+  flex-grow: 1;
+}

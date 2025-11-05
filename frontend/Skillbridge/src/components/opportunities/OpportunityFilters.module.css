@@ -1,0 +1,87 @@
+/* OpportunityFilters.module.css */
+
+:root {
+  --color-primary: #7c3aed; /* Primary Purple */
+  --color-border-default: #e5e7eb; /* border-border */
+  --color-text-muted: #6b7280; /* text-muted-foreground */
+}
+
+/* --- Container Card --- */
+.container {
+  /* bg-card border border-border rounded-lg p-4 mb-6 shadow-sm */
+  background-color: white; 
+  border: 1px solid var(--color-border-default);
+  border-radius: 0.5rem; /* rounded-lg */
+  padding: 1rem; /* p-4 */
+  margin-bottom: 1.5rem; /* mb-6 */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+}
+
+/* --- Filters Wrapper --- */
+.filtersWrapper {
+  /* flex flex-col md:flex-row gap-4 */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* gap-4 */
+}
+
+/* Desktop Styles */
+@media (min-width: 768px) {
+  .filtersWrapper {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+/* --- Search Input --- */
+.searchContainer {
+  /* flex-1 relative */
+  flex-grow: 1;
+  position: relative;
+}
+
+.searchIcon {
+  /* absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground */
+  position: absolute;
+  left: 0.75rem; /* left-3 */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem; /* w-4 */
+  height: 1rem; /* h-4 */
+  color: var(--color-text-muted);
+  z-index: 10; /* Keep icon above input field */
+}
+
+.searchInput {
+  /* pl-10 hover:border-primary transition-colors */
+  padding-left: 2.5rem; /* pl-10 (40px) to make space for the icon */
+  transition: border-color 150ms ease-in-out;
+}
+
+.searchInput:hover {
+  border-color: var(--color-primary);
+}
+
+/* --- Select Triggers (Category & Sort) --- */
+.selectTrigger {
+  /* hover:border-primary transition-colors */
+  transition: border-color 150ms ease-in-out;
+}
+
+.selectTrigger:hover {
+  border-color: var(--color-primary);
+}
+
+/* Desktop Width for Selects */
+@media (min-width: 768px) {
+  .selectTrigger {
+    min-width: 12rem; /* md:w-48 (12rem) */
+  }
+}
+
+.sortIcon {
+  /* w-4 h-4 mr-2 */
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+}

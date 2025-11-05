@@ -1,0 +1,103 @@
+/* ProfileProgressBar.module.css */
+
+/* Define CSS Variables if not global (recommended for theme colors) */
+:root {
+  --color-primary: #7c3aed; /* Example Primary Color (like original #7c3aed) */
+  --color-background-card: white;
+  --color-border-default: #e5e7eb;
+  --color-text-card-foreground: #1f2937;
+  --color-text-muted-foreground: #6b7280;
+}
+
+.container {
+  /* bg-card border border-border rounded-lg p-6 mb-6 shadow-md border-l-4 border-l-primary */
+  background-color: var(--color-background-card);
+  border: 1px solid var(--color-border-default);
+  border-radius: 0.5rem; /* rounded-lg */
+  padding: 1.5rem; /* p-6 */
+  margin-bottom: 1.5rem; /* mb-6 */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); /* shadow-md */
+  border-left: 4px solid var(--color-primary); /* border-l-4 border-l-primary */
+}
+
+.header {
+  display: flex; /* flex */
+  align-items: center; /* items-center */
+  justify-content: space-between; /* justify-between */
+  margin-bottom: 0.75rem; /* mb-3 */
+}
+
+.headerLeft {
+  display: flex; /* flex */
+  align-items: center; /* items-center */
+  gap: 0.5rem; /* gap-2 */
+}
+
+.headerTitle {
+  color: var(--color-text-card-foreground); /* text-card-foreground */
+  font-weight: 600;
+}
+
+/* --- Icon Styles --- */
+.iconWrapper {
+  padding: 0.375rem; /* p-1.5 */
+  border-radius: 0.5rem; /* rounded-lg */
+  display: flex; /* ensure lucide icon is centered */
+}
+
+.iconWrapperIncomplete {
+  /* bg-primary/10 */
+  background-color: rgba(124, 58, 237, 0.1); /* Assuming primary is #7c3aed */
+}
+
+.iconWrapperComplete {
+  /* bg-purple-50 dark:bg-purple-950 */
+  background-color: #f3f0ff; 
+  /* Fallback color, assuming a standard light theme. Dark theme color may need media query. */
+}
+
+.icon {
+  width: 1.25rem; /* w-5 */
+  height: 1.25rem; /* h-5 */
+}
+
+.iconIncomplete {
+  color: var(--color-primary); /* text-primary */
+}
+
+.iconComplete {
+  color: #8b5cf6; /* text-purple-500 */
+}
+
+/* --- Progress Badge --- */
+.progressBadge {
+  color: var(--color-primary); /* text-primary */
+  padding: 0.25rem 0.75rem; /* px-3 py-1 */
+  background-color: rgba(124, 58, 237, 0.1); /* bg-primary/10 */
+  border-radius: 9999px; /* rounded-full */
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+/* --- Progress Bar --- */
+.progressBar {
+  height: 0.625rem; /* h-2.5 */
+  /* Assuming the base Progress component handles the background color and track itself */
+}
+
+/* --- Message Text --- */
+.incompleteText {
+  color: var(--color-text-muted-foreground); /* text-muted-foreground */
+  margin-top: 0.75rem; /* mt-3 */
+  font-size: 0.875rem;
+}
+
+.completeText {
+  color: #8b5cf6; /* text-purple-600 */
+  margin-top: 0.75rem; /* mt-3 */
+  display: flex; /* flex */
+  align-items: center; /* items-center */
+  gap: 0.5rem; /* gap-2 */
+  font-weight: 500;
+  font-size: 0.875rem;
+}

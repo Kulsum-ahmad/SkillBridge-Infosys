@@ -1,40 +1,434 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { MessageCircle, X, ArrowLeft, Send } from "lucide-react";
+import { io } from "socket.io-client";
+import { toast } from "sonner";
+import api from "./api.js";
 
 export default function MessagePopup() {
   const [open, setOpen] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
   const [messageInput, setMessageInput] = useState("");
+  const [conversations, setConversations] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [socket, setSocket] = useState(null);
+  const messagesEndRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
+  // Refs to avoid stale closures in socket event listeners
+  const selectedChatRef = useRef(null);
+  const messagesRef = useRef([]);
+  const currentUserIdRef = useRef(null);
 
-  // Example chats
-  const messages = [
-    {
-      id: 1,
-      name: "Green Future NGO",
-      type: "Organization",
-      preview: "Thank you for your interest in our Beach Cleanup project!",
-      time: "2m ago",
-      unread: 2,
-      chat: [
-        { sender: "ngo", text: "Hello! Thank you for applying to our Beach Cleanup Drive.", time: "10:30 AM" },
-        { sender: "user", text: "Thank you! I'm very excited about this opportunity.", time: "10:32 AM" },
-        { sender: "ngo", text: "We'd love to have you on board. The event is scheduled for next Saturday. Can you confirm your availability?", time: "10:35 AM" },
-        { sender: "user", text: "Yes, I can definitely make it! What should I bring?", time: "10:36 AM" },
-      ],
-    },
-    {
-      id: 2,
-      name: "Sarah Chen",
-      type: "Volunteer Coordinator",
-      preview: "Your application has been reviewed",
-      time: "1h ago",
-      unread: 0,
-      chat: [
-        { sender: "ngo", text: "Hi! Your application looks great.", time: "9:10 AM" },
-        { sender: "user", text: "Thank you so much!", time: "9:12 AM" },
-      ],
-    },
-  ];
+  // Get auth token
+  const getAuthToken = () => {
+    let token = localStorage.getItem("sb_token");
+    if (!token) {
+      const userStr = localStorage.getItem("sb_user");
+      if (userStr) {
+        try {
+          const userData = JSON.parse(userStr);
+          token = userData.token;
+        } catch (e) {
+          console.error("Error parsing sb_user:", e);
+        }
+      }
+    }
+    return token;
+  };
+
+  // Initialize Socket.IO connection
+  useEffect(() => {
+    const token = getAuthToken();
+    if (!token) {
+      console.warn("No auth token found, Socket.IO connection skipped");
+      return;
+    }
+
+    const newSocket = io("http://localhost:5000", {
+      auth: {
+        token: token,
+      },
+      transports: ["websocket", "polling"],
+    });
+
+    const handleConnect = () => {
+      console.log("✅ Socket.IO connected");
+    };
+
+    const handleDisconnect = () => {
+      console.log("❌ Socket.IO disconnected");
+    };
+
+    const handleError = (error) => {
+      console.error("Socket.IO error:", error);
+      const errorMessage = error?.message || error?.toString() || "Connection error";
+      toast.error(errorMessage.includes("message") ? errorMessage : "Connection error. Please refresh the page.");
+    };
+
+    // Listen for new messages (from other users)
+    const handleNewMessage = (data) => {
+      const { message, conversationId } = data;
+
+      // Check if message already exists to prevent duplicates
+      const messageExists = messagesRef.current.some(
+        (msg) => msg._id === message._id || (msg._id?.startsWith("temp-") && msg.content === message.content)
+      );
+
+      if (messageExists) {
+        return;
+      }
+
+      // Update messages if this conversation is open
+      const currentSelectedChat = selectedChatRef.current;
+      if (currentSelectedChat && currentSelectedChat._id === conversationId) {
+        setMessages((prev) => {
+          // Double-check for duplicates
+          const exists = prev.some((msg) => msg._id === message._id);
+          if (exists) return prev;
+          return [...prev, message];
+        });
+        
+        // Scroll and show notification
+        setTimeout(() => {
+          messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+        
+        // Only show toast if message is from another user
+        const senderId = message.sender?._id?.toString ? message.sender._id.toString() : message.sender?._id;
+        const currentUserIdStr = currentUserIdRef.current?.toString ? currentUserIdRef.current.toString() : currentUserIdRef.current;
+        if (senderId && senderId !== currentUserIdStr) {
+          toast.success(`New message from ${message.sender?.fullName || message.sender?.organizationName || "User"}`);
+        }
+      }
+
+      // Update conversation list and maintain sort order
+      setConversations((prev) => {
+        const updated = prev.map((conv) => {
+          if (conv._id === conversationId) {
+            const currentSelectedChat = selectedChatRef.current;
+            return {
+              ...conv,
+              lastMessage: message.content,
+              lastMessageAt: message.createdAt,
+              unreadCount: conv._id === currentSelectedChat?._id ? 0 : (conv.unreadCount || 0) + 1,
+            };
+          }
+          return conv;
+        });
+        // Re-sort by lastMessageAt (most recent first), then by updatedAt
+        return updated.sort((a, b) => {
+          const aTime = new Date(a.lastMessageAt || a.updatedAt || a.createdAt).getTime();
+          const bTime = new Date(b.lastMessageAt || b.updatedAt || b.createdAt).getTime();
+          return bTime - aTime;
+        });
+      });
+    };
+
+    // Listen for message sent confirmation (from current user)
+    const handleMessageSent = (data) => {
+      if (data.success && data.message) {
+        const message = data.message;
+        const currentSelectedChat = selectedChatRef.current;
+
+        // Replace temp message with real message
+        setMessages((prev) => {
+          // Remove any temp messages with matching content
+          const filtered = prev.filter((msg) => {
+            if (msg._id?.startsWith("temp-") && msg.content === message.content) {
+              return false;
+            }
+            // Also check if real message already exists
+            if (msg._id === message._id) {
+              return false;
+            }
+            return true;
+          });
+          // Add the real message
+          return [...filtered, message];
+        });
+
+        // Update conversation if it's the current one and maintain sort order
+        if (currentSelectedChat && currentSelectedChat._id === message.conversation) {
+          setConversations((prev) => {
+            const updated = prev.map((conv) =>
+              conv._id === message.conversation
+                ? {
+                    ...conv,
+                    lastMessage: message.content,
+                    lastMessageAt: message.createdAt,
+                  }
+                : conv
+            );
+            // Re-sort by lastMessageAt (most recent first), then by updatedAt
+            return updated.sort((a, b) => {
+              const aTime = new Date(a.lastMessageAt || a.updatedAt || a.createdAt).getTime();
+              const bTime = new Date(b.lastMessageAt || b.updatedAt || b.createdAt).getTime();
+              return bTime - aTime;
+            });
+          });
+        }
+
+        setTimeout(() => {
+          messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }
+    };
+
+    // Listen for new conversation creation
+    const handleNewConversation = (data) => {
+      if (data.conversation) {
+        const newConversation = data.conversation;
+
+        // Check if conversation already exists to prevent duplicates
+        setConversations((prev) => {
+          const exists = prev.some((conv) => conv._id === newConversation._id);
+          if (exists) {
+            // If it exists, update it with the latest data and maintain sort order
+            const updated = prev.map((conv) =>
+              conv._id === newConversation._id ? newConversation : conv
+            );
+            // Re-sort by lastMessageAt (most recent first), then by updatedAt
+            return updated.sort((a, b) => {
+              const aTime = new Date(a.lastMessageAt || a.updatedAt || a.createdAt).getTime();
+              const bTime = new Date(b.lastMessageAt || b.updatedAt || b.createdAt).getTime();
+              return bTime - aTime;
+            });
+          }
+          // Add new conversation at the beginning (most recent first)
+          return [newConversation, ...prev];
+        });
+
+        console.log("✅ New conversation added to list:", newConversation._id);
+      }
+    };
+
+    // Register event listeners
+    newSocket.on("connect", handleConnect);
+    newSocket.on("disconnect", handleDisconnect);
+    newSocket.on("error", handleError);
+    newSocket.on("new_message", handleNewMessage);
+    newSocket.on("message_sent", handleMessageSent);
+    newSocket.on("conversation:new", handleNewConversation);
+
+    setSocket(newSocket);
+
+    // Cleanup function
+    return () => {
+      // Remove all event listeners
+      newSocket.off("connect", handleConnect);
+      newSocket.off("disconnect", handleDisconnect);
+      newSocket.off("error", handleError);
+      newSocket.off("new_message", handleNewMessage);
+      newSocket.off("message_sent", handleMessageSent);
+      newSocket.off("conversation:new", handleNewConversation);
+      // Close socket connection
+      newSocket.close();
+    };
+  }, []);
+
+  // Fetch conversations
+  const fetchConversations = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get("/conversations");
+
+      if (response.data?.success && response.data?.data) {
+        setConversations(response.data.data);
+      } else {
+        setConversations([]);
+      }
+    } catch (error) {
+      console.error("Error fetching conversations:", error);
+      toast.error("Failed to load conversations");
+      setConversations([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch messages for a conversation
+  const fetchMessages = async (conversationId) => {
+    try {
+      setLoading(true);
+      const response = await api.get(`/messages/${conversationId}`);
+
+      if (response.data?.success && response.data?.data) {
+        setMessages(response.data.data);
+        scrollToBottom();
+      } else {
+        setMessages([]);
+      }
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+      toast.error("Failed to load messages");
+      setMessages([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Scroll to bottom of messages
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // Load conversations when popup opens
+  useEffect(() => {
+    if (open) {
+      fetchConversations();
+    }
+  }, [open]);
+
+  // Load messages when a chat is selected
+  useEffect(() => {
+    if (selectedChat && selectedChat._id) {
+      fetchMessages(selectedChat._id);
+    } else {
+      setMessages([]);
+    }
+  }, [selectedChat]);
+
+  // Handle sending a message
+  const handleSendMessage = async () => {
+    if (!messageInput.trim() || !selectedChat || !socket) {
+      return;
+    }
+
+    const content = messageInput.trim();
+    const conversationId = selectedChat._id;
+    const receiverId = selectedChat.otherParticipant._id;
+
+    // Optimistically update UI with temp message
+    const tempMessageId = `temp-${Date.now()}`;
+    const tempMessage = {
+      _id: tempMessageId,
+      content,
+      sender: { _id: currentUserId, fullName: "You" },
+      receiver: selectedChat.otherParticipant,
+      createdAt: new Date().toISOString(),
+      read: false,
+      conversation: conversationId,
+    };
+
+    // Clear input immediately for better UX
+    setMessageInput("");
+    
+    // Add temp message
+    setMessages((prev) => [...prev, tempMessage]);
+    
+    // Scroll to bottom
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 50);
+
+    // Update conversation last message optimistically
+    setConversations((prev) =>
+      prev.map((conv) =>
+        conv._id === conversationId
+          ? {
+              ...conv,
+              lastMessage: content,
+              lastMessageAt: new Date().toISOString(),
+            }
+          : conv
+      )
+    );
+
+    // Send via Socket.IO (this is async but doesn't throw - errors come via socket events)
+    try {
+      socket.emit("send_message", {
+        conversationId,
+        receiverId,
+        content,
+      });
+
+      // Note: The temp message will be replaced by the real message 
+      // when message_sent event is received (handled in socket listener)
+      // If there's an error, it will be handled by the socket error listener
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast.error("Failed to send message. Please try again.");
+      
+      // Remove temp message on error
+      setMessages((prev) => prev.filter((msg) => msg._id !== tempMessageId));
+    }
+  };
+
+  // Handle typing indicator
+  const handleTyping = () => {
+    if (!selectedChat || !socket) return;
+
+    socket.emit("typing", {
+      conversationId: selectedChat._id,
+      receiverId: selectedChat.otherParticipant._id,
+    });
+
+    // Clear existing timeout
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
+    // Stop typing after 2 seconds
+    typingTimeoutRef.current = setTimeout(() => {
+      socket.emit("stop_typing", {
+        conversationId: selectedChat._id,
+        receiverId: selectedChat.otherParticipant._id,
+      });
+    }, 2000);
+  };
+
+  // Format time
+  const formatTime = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const now = new Date();
+    const diff = now - date;
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+
+    if (minutes < 1) return "Just now";
+    if (minutes < 60) return `${minutes}m ago`;
+    if (hours < 24) return `${hours}h ago`;
+    if (days < 7) return `${days}d ago`;
+    return date.toLocaleDateString();
+  };
+
+  // Format message time
+  const formatMessageTime = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  };
+
+  // Get current user ID
+  const getCurrentUserId = () => {
+    const userStr = localStorage.getItem("sb_user");
+    if (userStr) {
+      try {
+        const userData = JSON.parse(userStr);
+        return userData._id || userData.user?._id;
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  };
+
+  const currentUserId = getCurrentUserId();
+  
+  // Update refs when state changes
+  useEffect(() => {
+    selectedChatRef.current = selectedChat;
+  }, [selectedChat]);
+
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
+
+  useEffect(() => {
+    currentUserIdRef.current = currentUserId;
+  }, [currentUserId]);
 
   const styles = {
     chatButton: {
@@ -70,7 +464,7 @@ export default function MessagePopup() {
       zIndex: 9999,
       display: "flex",
       flexDirection: "column",
-      height: "450px",
+      height: "600px",
     },
     header: {
       background: "linear-gradient(135deg, #d946ef, #9333ea)",
@@ -94,11 +488,18 @@ export default function MessagePopup() {
       display: "flex",
       justifyContent: "space-between",
       alignItems: "flex-start",
+      transition: "background 0.2s",
     },
     messageLeft: { flex: 1, marginRight: "8px" },
     messageName: { fontWeight: "600", fontSize: "14px", color: "#111827" },
     messageType: { fontSize: "12px", color: "#6b7280", marginBottom: "4px" },
-    messagePreview: { fontSize: "13px", color: "#374151" },
+    messagePreview: {
+      fontSize: "13px",
+      color: "#374151",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+    },
     time: { fontSize: "11px", color: "#9ca3af" },
     unreadBadge: {
       backgroundColor: "#9333ea",
@@ -168,14 +569,17 @@ export default function MessagePopup() {
       alignItems: "center",
       cursor: "pointer",
     },
-  };
-
-  const handleSendMessage = () => {
-    if (messageInput.trim() && selectedChat) {
-      const newChat = [...selectedChat.chat, { sender: "user", text: messageInput, time: "Now" }];
-      setSelectedChat({ ...selectedChat, chat: newChat });
-      setMessageInput("");
-    }
+    loading: {
+      padding: "20px",
+      textAlign: "center",
+      color: "#6b7280",
+    },
+    emptyState: {
+      padding: "20px",
+      textAlign: "center",
+      color: "#9ca3af",
+      fontStyle: "italic",
+    },
   };
 
   return (
@@ -199,13 +603,18 @@ export default function MessagePopup() {
                 <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                   <ArrowLeft
                     size={20}
-                    onClick={() => setSelectedChat(null)}
+                    onClick={() => {
+                      setSelectedChat(null);
+                      setMessages([]);
+                    }}
                     style={{ cursor: "pointer" }}
                   />
                   <div>
-                    {selectedChat.name}
+                    {selectedChat.otherParticipant?.name || "Unknown User"}
                     <div style={{ fontSize: "12px", fontWeight: "normal" }}>
-                      {selectedChat.type}
+                      {selectedChat.otherParticipant?.userType === "ngo"
+                        ? "Organization"
+                        : "Volunteer"}
                     </div>
                   </div>
                 </div>
@@ -222,23 +631,39 @@ export default function MessagePopup() {
           {/* Message list */}
           {!selectedChat && (
             <div style={styles.messageList}>
-              {messages.map((msg) => (
-                <div
-                  key={msg.id}
-                  style={styles.messageItem}
-                  onClick={() => setSelectedChat(msg)}
-                >
-                  <div style={styles.messageLeft}>
-                    <div style={styles.messageName}>{msg.name}</div>
-                    <div style={styles.messageType}>{msg.type}</div>
-                    <div style={styles.messagePreview}>{msg.preview}</div>
+              {loading ? (
+                <div style={styles.loading}>Loading conversations...</div>
+              ) : conversations.length === 0 ? (
+                <div style={styles.emptyState}>No conversations yet</div>
+              ) : (
+                conversations.map((conv) => (
+                  <div
+                    key={conv._id}
+                    style={styles.messageItem}
+                    onClick={() => setSelectedChat(conv)}
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f9fafb")}
+                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#fff")}
+                  >
+                    <div style={styles.messageLeft}>
+                      <div style={styles.messageName}>
+                        {conv.otherParticipant?.name || "Unknown User"}
+                      </div>
+                      <div style={styles.messageType}>
+                        {conv.otherParticipant?.userType === "ngo" ? "Organization" : "Volunteer"}
+                      </div>
+                      <div style={styles.messagePreview}>
+                        {conv.lastMessage || "No messages yet"}
+                      </div>
+                    </div>
+                    <div>
+                      <div style={styles.time}>{formatTime(conv.lastMessageAt)}</div>
+                      {conv.unreadCount > 0 && (
+                        <div style={styles.unreadBadge}>{conv.unreadCount}</div>
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    <div style={styles.time}>{msg.time}</div>
-                    {msg.unread > 0 && <div style={styles.unreadBadge}>{msg.unread}</div>}
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           )}
 
@@ -246,20 +671,35 @@ export default function MessagePopup() {
           {selectedChat && (
             <>
               <div style={styles.chatBody}>
-                {selectedChat.chat.map((c, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      ...styles.chatMessage,
-                      ...(c.sender === "ngo" ? styles.ngoMessage : styles.userMessage),
-                    }}
-                  >
-                    {c.text}
-                    <div style={{ fontSize: "11px", opacity: 0.7, marginTop: "4px" }}>
-                      {c.time}
-                    </div>
-                  </div>
-                ))}
+                {loading && messages.length === 0 ? (
+                  <div style={styles.loading}>Loading messages...</div>
+                ) : messages.length === 0 ? (
+                  <div style={styles.emptyState}>No messages yet. Start the conversation!</div>
+                ) : (
+                  <>
+                    {messages.map((msg) => {
+                      const isCurrentUser =
+                        msg.sender?._id === currentUserId ||
+                        msg.sender?._id === "current-user" ||
+                        msg.sender?.fullName === "You";
+                      return (
+                        <div
+                          key={msg._id || `msg-${msg.createdAt}`}
+                          style={{
+                            ...styles.chatMessage,
+                            ...(isCurrentUser ? styles.userMessage : styles.ngoMessage),
+                          }}
+                        >
+                          {msg.content}
+                          <div style={{ fontSize: "11px", opacity: 0.7, marginTop: "4px" }}>
+                            {formatMessageTime(msg.createdAt)}
+                          </div>
+                        </div>
+                      );
+                    })}
+                    <div ref={messagesEndRef} />
+                  </>
+                )}
               </div>
 
               <div style={styles.inputBox}>
@@ -267,8 +707,16 @@ export default function MessagePopup() {
                   type="text"
                   placeholder="Type a message..."
                   value={messageInput}
-                  onChange={(e) => setMessageInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+                  onChange={(e) => {
+                    setMessageInput(e.target.value);
+                    handleTyping();
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSendMessage();
+                    }
+                  }}
                   style={styles.inputField}
                 />
                 <button onClick={handleSendMessage} style={styles.sendButton}>

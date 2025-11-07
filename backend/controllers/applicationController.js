@@ -1,6 +1,8 @@
 import Application from "../models/Application.js";
 import Opportunity from "../models/opportunity.model.js";
 import User from "../models/User.js";
+import Conversation from "../models/Conversation.js";
+import { emitNewConversation } from "../socket/socketHandler.js";
 import path from "path";
 import mongoose from "mongoose";
 
@@ -187,20 +189,77 @@ export const updateApplicationStatus = async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
+    const ngoId = req.user._id;
 
     const validStatuses = ["pending", "accepted", "rejected"];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ success: false, message: "Invalid status" });
     }
 
+    // Get the application with populated data
+    const application = await Application.findById(id)
+      .populate("user", "fullName email")
+      .populate("opportunity", "title ngo_id");
+
+    if (!application) {
+      return res.status(404).json({ success: false, message: "Application not found" });
+    }
+
+    // Verify that the NGO owns this opportunity
+    const opportunity = await Opportunity.findById(application.opportunity._id);
+    if (!opportunity || opportunity.ngo_id.toString() !== ngoId.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to update this application",
+      });
+    }
+
+    // Update application status
     const updatedApp = await Application.findByIdAndUpdate(
       id,
       { status },
       { new: true }
     );
 
-    if (!updatedApp) {
-      return res.status(404).json({ success: false, message: "Application not found" });
+    // 🎯 If status is "accepted", automatically create a conversation
+    if (status === "accepted") {
+      try {
+        const volunteerId = application.user._id;
+
+        // Check if conversation already exists
+        let conversation = await Conversation.findOne({
+          participants: { $all: [ngoId, volunteerId] },
+          application: id,
+        });
+
+        if (!conversation) {
+          // Create new conversation
+          conversation = new Conversation({
+            participants: [ngoId, volunteerId],
+            application: id,
+            lastMessage: null,
+            lastMessageAt: null,
+          });
+
+          await conversation.save();
+          console.log(`✅ Conversation created for application ${id} between NGO ${ngoId} and Volunteer ${volunteerId}`);
+          
+          // Populate participants before emitting
+          await conversation.populate("participants", "fullName email userType organizationName");
+          if (conversation.application) {
+            await conversation.populate("application");
+          }
+          
+          // Emit conversation:new event to both participants
+          await emitNewConversation(conversation);
+        } else {
+          console.log(`ℹ️ Conversation already exists for application ${id}`);
+        }
+      } catch (convError) {
+        console.error("❌ Error creating conversation:", convError);
+        // Don't fail the request if conversation creation fails
+        // The conversation can be created manually later
+      }
     }
 
     res.status(200).json({

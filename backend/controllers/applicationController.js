@@ -2,7 +2,8 @@ import Application from "../models/Application.js";
 import Opportunity from "../models/opportunity.model.js";
 import User from "../models/User.js";
 import Conversation from "../models/Conversation.js";
-import { emitNewConversation } from "../socket/socketHandler.js";
+import { emitNewConversation, emitNotification } from "../socket/socketHandler.js";
+import { createNotification } from "./notificationController.js";
 import path from "path";
 import mongoose from "mongoose";
 
@@ -221,6 +222,46 @@ export const updateApplicationStatus = async (req, res) => {
       { new: true }
     );
 
+    // Create notification for the volunteer
+    const volunteerId = application.user._id;
+    const opportunityTitle = application.opportunity?.title || "the opportunity";
+    
+    let notificationType, notificationTitle, notificationMessage;
+    
+    if (status === "accepted") {
+      notificationType = "application_approved";
+      notificationTitle = "Application Approved!";
+      notificationMessage = `Your application for '${opportunityTitle}' has been approved. Check your dashboard for next steps.`;
+    } else if (status === "rejected") {
+      notificationType = "application_rejected";
+      notificationTitle = "Application Update";
+      notificationMessage = `Your application for '${opportunityTitle}' has been reviewed. Check your dashboard for details.`;
+    } else {
+      notificationType = "application_pending";
+      notificationTitle = "Application Status Updated";
+      notificationMessage = `Your application for '${opportunityTitle}' status has been updated to pending.`;
+    }
+
+    // Create and emit notification
+    const notification = await createNotification({
+      userId: volunteerId.toString(),
+      type: notificationType,
+      title: notificationTitle,
+      message: notificationMessage,
+      relatedEntity: {
+        type: "application",
+        id: id,
+      },
+      metadata: {
+        opportunityId: application.opportunity?._id?.toString(),
+        opportunityTitle: opportunityTitle,
+      },
+    });
+
+    if (notification) {
+      await emitNotification(notification);
+    }
+
     // 🎯 If status is "accepted", automatically create a conversation
     if (status === "accepted") {
       try {
@@ -252,6 +293,37 @@ export const updateApplicationStatus = async (req, res) => {
           
           // Emit conversation:new event to both participants
           await emitNewConversation(conversation);
+
+          // Create notifications for new conversation
+          const participants = conversation.participants;
+          if (participants.length === 2) {
+            const notificationPromises = participants.map(async (participant) => {
+              const otherParticipant = participants.find(p => p._id.toString() !== participant._id.toString());
+              if (otherParticipant) {
+                const otherName = otherParticipant.fullName || otherParticipant.organizationName || "Someone";
+                const convNotification = await createNotification({
+                  userId: participant._id.toString(),
+                  type: "new_conversation",
+                  title: "New Conversation Started",
+                  message: `A conversation has been started for your accepted application. Start chatting with ${otherName}!`,
+                  relatedEntity: {
+                    type: "conversation",
+                    id: conversation._id,
+                  },
+                  metadata: {
+                    otherParticipantId: otherParticipant._id.toString(),
+                    otherParticipantName: otherName,
+                    applicationId: id.toString(),
+                  },
+                });
+
+                if (convNotification) {
+                  await emitNotification(convNotification);
+                }
+              }
+            });
+            await Promise.all(notificationPromises);
+          }
         } else {
           console.log(`ℹ️ Conversation already exists for application ${id}`);
         }

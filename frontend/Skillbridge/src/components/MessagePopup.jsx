@@ -12,6 +12,7 @@ export default function MessagePopup() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [socket, setSocket] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState(new Set());
   const messagesEndRef = useRef(null);
   const typingTimeoutRef = useRef(null);
   // Refs to avoid stale closures in socket event listeners
@@ -61,8 +62,13 @@ export default function MessagePopup() {
 
     const handleError = (error) => {
       console.error("Socket.IO error:", error);
-      const errorMessage = error?.message || error?.toString() || "Connection error";
-      toast.error(errorMessage.includes("message") ? errorMessage : "Connection error. Please refresh the page.");
+      const errorMessage =
+        error?.message || error?.toString() || "Connection error";
+      toast.error(
+        errorMessage.includes("message")
+          ? errorMessage
+          : "Connection error. Please refresh the page."
+      );
     };
 
     // Listen for new messages (from other users)
@@ -71,7 +77,9 @@ export default function MessagePopup() {
 
       // Check if message already exists to prevent duplicates
       const messageExists = messagesRef.current.some(
-        (msg) => msg._id === message._id || (msg._id?.startsWith("temp-") && msg.content === message.content)
+        (msg) =>
+          msg._id === message._id ||
+          (msg._id?.startsWith("temp-") && msg.content === message.content)
       );
 
       if (messageExists) {
@@ -87,17 +95,27 @@ export default function MessagePopup() {
           if (exists) return prev;
           return [...prev, message];
         });
-        
+
         // Scroll and show notification
         setTimeout(() => {
           messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
         }, 100);
-        
+
         // Only show toast if message is from another user
-        const senderId = message.sender?._id?.toString ? message.sender._id.toString() : message.sender?._id;
-        const currentUserIdStr = currentUserIdRef.current?.toString ? currentUserIdRef.current.toString() : currentUserIdRef.current;
+        const senderId = message.sender?._id?.toString
+          ? message.sender._id.toString()
+          : message.sender?._id;
+        const currentUserIdStr = currentUserIdRef.current?.toString
+          ? currentUserIdRef.current.toString()
+          : currentUserIdRef.current;
         if (senderId && senderId !== currentUserIdStr) {
-          toast.success(`New message from ${message.sender?.fullName || message.sender?.organizationName || "User"}`);
+          toast.success(
+            `New message from ${
+              message.sender?.fullName ||
+              message.sender?.organizationName ||
+              "User"
+            }`
+          );
         }
       }
 
@@ -110,15 +128,22 @@ export default function MessagePopup() {
               ...conv,
               lastMessage: message.content,
               lastMessageAt: message.createdAt,
-              unreadCount: conv._id === currentSelectedChat?._id ? 0 : (conv.unreadCount || 0) + 1,
+              unreadCount:
+                conv._id === currentSelectedChat?._id
+                  ? 0
+                  : (conv.unreadCount || 0) + 1,
             };
           }
           return conv;
         });
         // Re-sort by lastMessageAt (most recent first), then by updatedAt
         return updated.sort((a, b) => {
-          const aTime = new Date(a.lastMessageAt || a.updatedAt || a.createdAt).getTime();
-          const bTime = new Date(b.lastMessageAt || b.updatedAt || b.createdAt).getTime();
+          const aTime = new Date(
+            a.lastMessageAt || a.updatedAt || a.createdAt
+          ).getTime();
+          const bTime = new Date(
+            b.lastMessageAt || b.updatedAt || b.createdAt
+          ).getTime();
           return bTime - aTime;
         });
       });
@@ -134,7 +159,10 @@ export default function MessagePopup() {
         setMessages((prev) => {
           // Remove any temp messages with matching content
           const filtered = prev.filter((msg) => {
-            if (msg._id?.startsWith("temp-") && msg.content === message.content) {
+            if (
+              msg._id?.startsWith("temp-") &&
+              msg.content === message.content
+            ) {
               return false;
             }
             // Also check if real message already exists
@@ -148,7 +176,10 @@ export default function MessagePopup() {
         });
 
         // Update conversation if it's the current one and maintain sort order
-        if (currentSelectedChat && currentSelectedChat._id === message.conversation) {
+        if (
+          currentSelectedChat &&
+          currentSelectedChat._id === message.conversation
+        ) {
           setConversations((prev) => {
             const updated = prev.map((conv) =>
               conv._id === message.conversation
@@ -161,8 +192,12 @@ export default function MessagePopup() {
             );
             // Re-sort by lastMessageAt (most recent first), then by updatedAt
             return updated.sort((a, b) => {
-              const aTime = new Date(a.lastMessageAt || a.updatedAt || a.createdAt).getTime();
-              const bTime = new Date(b.lastMessageAt || b.updatedAt || b.createdAt).getTime();
+              const aTime = new Date(
+                a.lastMessageAt || a.updatedAt || a.createdAt
+              ).getTime();
+              const bTime = new Date(
+                b.lastMessageAt || b.updatedAt || b.createdAt
+              ).getTime();
               return bTime - aTime;
             });
           });
@@ -189,8 +224,12 @@ export default function MessagePopup() {
             );
             // Re-sort by lastMessageAt (most recent first), then by updatedAt
             return updated.sort((a, b) => {
-              const aTime = new Date(a.lastMessageAt || a.updatedAt || a.createdAt).getTime();
-              const bTime = new Date(b.lastMessageAt || b.updatedAt || b.createdAt).getTime();
+              const aTime = new Date(
+                a.lastMessageAt || a.updatedAt || a.createdAt
+              ).getTime();
+              const bTime = new Date(
+                b.lastMessageAt || b.updatedAt || b.createdAt
+              ).getTime();
               return bTime - aTime;
             });
           }
@@ -210,6 +249,41 @@ export default function MessagePopup() {
     newSocket.on("message_sent", handleMessageSent);
     newSocket.on("conversation:new", handleNewConversation);
 
+    // Presence listeners
+    const handleOnlineUsers = (list) => {
+      try {
+        // Normalize IDs to strings to avoid type mismatches
+        const normalized = Array.isArray(list)
+          ? list.map((id) => String(id))
+          : [];
+        setOnlineUsers(new Set(normalized));
+      } catch (e) {
+        console.error("Error setting online users:", e);
+      }
+    };
+
+    const handleUserOnline = (userId) => {
+      const idStr = String(userId);
+      setOnlineUsers((prev) => {
+        const s = new Set(prev);
+        s.add(idStr);
+        return s;
+      });
+    };
+
+    const handleUserOffline = (userId) => {
+      const idStr = String(userId);
+      setOnlineUsers((prev) => {
+        const s = new Set(prev);
+        s.delete(idStr);
+        return s;
+      });
+    };
+
+    newSocket.on("online_users", handleOnlineUsers);
+    newSocket.on("user_online", handleUserOnline);
+    newSocket.on("user_offline", handleUserOffline);
+
     setSocket(newSocket);
 
     // Cleanup function
@@ -221,9 +295,28 @@ export default function MessagePopup() {
       newSocket.off("new_message", handleNewMessage);
       newSocket.off("message_sent", handleMessageSent);
       newSocket.off("conversation:new", handleNewConversation);
+      newSocket.off("online_users", handleOnlineUsers);
+      newSocket.off("user_online", handleUserOnline);
+      newSocket.off("user_offline", handleUserOffline);
       // Close socket connection
       newSocket.close();
     };
+  }, []);
+
+  // Fetch initial online users via API as a fallback/initialization
+  useEffect(() => {
+    const fetchOnline = async () => {
+      try {
+        const resp = await api.get("/online-users");
+        if (resp.data?.success && Array.isArray(resp.data.data)) {
+          setOnlineUsers(new Set(resp.data.data));
+        }
+      } catch (err) {
+        // ignore; socket will provide online list when connected
+      }
+    };
+
+    fetchOnline();
   }, []);
 
   // Fetch conversations
@@ -279,6 +372,46 @@ export default function MessagePopup() {
     }
   }, [open]);
 
+  // Listen for custom event to open message popup from notification click
+  useEffect(() => {
+    const handleOpenMessagePopup = async (event) => {
+      const { conversationId } = event.detail || {};
+
+      // Open the popup first
+      setOpen(true);
+
+      if (conversationId) {
+        // Fetch conversations to get the latest list
+        try {
+          const response = await api.get("/conversations");
+          if (response.data?.success && response.data?.data) {
+            const conversations = response.data.data;
+            // Find the conversation and select it
+            const conv = conversations.find((c) => c._id === conversationId);
+            if (conv) {
+              setSelectedChat(conv);
+              // Load messages for this conversation
+              fetchMessages(conversationId);
+            } else {
+              // Conversation not found, just show the list
+              setConversations(conversations);
+            }
+          }
+        } catch (error) {
+          console.error(
+            "Error fetching conversations for notification:",
+            error
+          );
+        }
+      }
+    };
+
+    window.addEventListener("openMessagePopup", handleOpenMessagePopup);
+    return () => {
+      window.removeEventListener("openMessagePopup", handleOpenMessagePopup);
+    };
+  }, []);
+
   // Load messages when a chat is selected
   useEffect(() => {
     if (selectedChat && selectedChat._id) {
@@ -312,10 +445,10 @@ export default function MessagePopup() {
 
     // Clear input immediately for better UX
     setMessageInput("");
-    
+
     // Add temp message
     setMessages((prev) => [...prev, tempMessage]);
-    
+
     // Scroll to bottom
     setTimeout(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -342,13 +475,13 @@ export default function MessagePopup() {
         content,
       });
 
-      // Note: The temp message will be replaced by the real message 
+      // Note: The temp message will be replaced by the real message
       // when message_sent event is received (handled in socket listener)
       // If there's an error, it will be handled by the socket error listener
     } catch (error) {
       console.error("Error sending message:", error);
       toast.error("Failed to send message. Please try again.");
-      
+
       // Remove temp message on error
       setMessages((prev) => prev.filter((msg) => msg._id !== tempMessageId));
     }
@@ -416,7 +549,7 @@ export default function MessagePopup() {
   };
 
   const currentUserId = getCurrentUserId();
-  
+
   // Update refs when state changes
   useEffect(() => {
     selectedChatRef.current = selectedChat;
@@ -600,7 +733,9 @@ export default function MessagePopup() {
           <div style={styles.header}>
             {selectedChat ? (
               <>
-                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "6px" }}
+                >
                   <ArrowLeft
                     size={20}
                     onClick={() => {
@@ -616,14 +751,39 @@ export default function MessagePopup() {
                         ? "Organization"
                         : "Volunteer"}
                     </div>
+                    <div
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: 500,
+                        marginTop: 4,
+                      }}
+                    >
+                      {onlineUsers.has(
+                        String(selectedChat.otherParticipant?._id)
+                      ) ? (
+                        <span style={{ color: "#10b981" }}>Online</span>
+                      ) : (
+                        <span style={{ color: "#9ca3af" }}>
+                          Last seen {formatTime(selectedChat.lastMessageAt)}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
-                <X size={18} onClick={() => setOpen(false)} style={{ cursor: "pointer" }} />
+                <X
+                  size={18}
+                  onClick={() => setOpen(false)}
+                  style={{ cursor: "pointer" }}
+                />
               </>
             ) : (
               <>
                 <span>Messages</span>
-                <X size={18} onClick={() => setOpen(false)} style={{ cursor: "pointer" }} />
+                <X
+                  size={18}
+                  onClick={() => setOpen(false)}
+                  style={{ cursor: "pointer" }}
+                />
               </>
             )}
           </div>
@@ -641,22 +801,56 @@ export default function MessagePopup() {
                     key={conv._id}
                     style={styles.messageItem}
                     onClick={() => setSelectedChat(conv)}
-                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f9fafb")}
-                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#fff")}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.backgroundColor = "#f9fafb")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.backgroundColor = "#fff")
+                    }
                   >
                     <div style={styles.messageLeft}>
                       <div style={styles.messageName}>
-                        {conv.otherParticipant?.name || "Unknown User"}
+                        <span
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 8,
+                          }}
+                        >
+                          <span
+                            style={{
+                              width: 10,
+                              height: 10,
+                              borderRadius: 10,
+                              display: "inline-block",
+                              background: onlineUsers.has(
+                                String(conv.otherParticipant?._id)
+                              )
+                                ? "#10b981"
+                                : "#e5e7eb",
+                              boxShadow: onlineUsers.has(
+                                String(conv.otherParticipant?._id)
+                              )
+                                ? "0 0 6px rgba(16,185,129,0.2)"
+                                : "none",
+                            }}
+                          />
+                          {conv.otherParticipant?.name || "Unknown User"}
+                        </span>
                       </div>
                       <div style={styles.messageType}>
-                        {conv.otherParticipant?.userType === "ngo" ? "Organization" : "Volunteer"}
+                        {conv.otherParticipant?.userType === "ngo"
+                          ? "Organization"
+                          : "Volunteer"}
                       </div>
                       <div style={styles.messagePreview}>
                         {conv.lastMessage || "No messages yet"}
                       </div>
                     </div>
                     <div>
-                      <div style={styles.time}>{formatTime(conv.lastMessageAt)}</div>
+                      <div style={styles.time}>
+                        {formatTime(conv.lastMessageAt)}
+                      </div>
                       {conv.unreadCount > 0 && (
                         <div style={styles.unreadBadge}>{conv.unreadCount}</div>
                       )}
@@ -674,7 +868,9 @@ export default function MessagePopup() {
                 {loading && messages.length === 0 ? (
                   <div style={styles.loading}>Loading messages...</div>
                 ) : messages.length === 0 ? (
-                  <div style={styles.emptyState}>No messages yet. Start the conversation!</div>
+                  <div style={styles.emptyState}>
+                    No messages yet. Start the conversation!
+                  </div>
                 ) : (
                   <>
                     {messages.map((msg) => {
@@ -687,11 +883,19 @@ export default function MessagePopup() {
                           key={msg._id || `msg-${msg.createdAt}`}
                           style={{
                             ...styles.chatMessage,
-                            ...(isCurrentUser ? styles.userMessage : styles.ngoMessage),
+                            ...(isCurrentUser
+                              ? styles.userMessage
+                              : styles.ngoMessage),
                           }}
                         >
                           {msg.content}
-                          <div style={{ fontSize: "11px", opacity: 0.7, marginTop: "4px" }}>
+                          <div
+                            style={{
+                              fontSize: "11px",
+                              opacity: 0.7,
+                              marginTop: "4px",
+                            }}
+                          >
                             {formatMessageTime(msg.createdAt)}
                           </div>
                         </div>

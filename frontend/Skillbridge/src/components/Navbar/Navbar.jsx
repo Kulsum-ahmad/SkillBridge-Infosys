@@ -1,20 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { User, Settings, LogOut, Bell, ChevronDown } from 'lucide-react';
+import { User, Settings, LogOut, ChevronDown } from 'lucide-react';
 import styles from './navbar.module.css';
-import api from '../api'; // Import your api instance
+import api from '../api';
+import NotificationButton from '../Notification/NotificationButton'; 
 
 const Navbar = () => {
   const [user, setUser] = useState(() => {
     return JSON.parse(localStorage.getItem("sb_user")) || {};
   });
-  const [profileImage, setProfileImage] = useState(""); // Store profile image
+  const [profileImage, setProfileImage] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
-  // Map role to display name and pill class
+  // Role mapping
   const roleDisplay = {
     ngo: { label: 'NGO', className: styles.statusNGO },
     volunteer: { label: 'Volunteer', className: styles.statusVolunteer },
@@ -58,11 +59,11 @@ const Navbar = () => {
     return () => window.removeEventListener("profile_updated", handleProfileUpdate);
   }, []);
 
-  // Logout function
+  // Logout
   const handleLogout = () => {
     localStorage.removeItem("sb_token");
     localStorage.removeItem("sb_user");
-    setProfileImage(""); // Clear profile image
+    setProfileImage("");
     window.dispatchEvent(new Event("sb_auth_change"));
     toast.success("You have been logged out.");
     setIsDropdownOpen(false);
@@ -82,7 +83,7 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isDropdownOpen]);
 
-  // Update user state if localStorage changes
+  // Update user if localStorage changes
   useEffect(() => {
     const handleAuthChange = () => {
       setUser(JSON.parse(localStorage.getItem("sb_user")) || {});
@@ -112,12 +113,10 @@ const Navbar = () => {
 
       {/* RIGHT SECTION */}
       <div className={styles.rightSection}>
-        <div className={styles.iconWrapper}>
-          <Link to="/notifications" className={styles.iconLink} title="Notifications" aria-label="View notifications">
-            <Bell size={20} />
-          </Link>
-        </div>
+        {/* Notification Button with dropdown */}
+        <NotificationButton />
 
+        {/* Profile Section */}
         <div className={styles.profileWrapper} ref={dropdownRef}>
           <button 
             onClick={toggleDropdown} 
@@ -151,7 +150,12 @@ const Navbar = () => {
               <Link to="/profile-editing" className={styles.dropdownItem} onClick={() => setIsDropdownOpen(false)} role="menuitem">
                 <Settings size={16} /> <span>Profile Editing</span>
               </Link>
-              <button onClick={handleLogout} className={`${styles.dropdownItem} ${styles.logoutButton}`} role="menuitem" type="button">
+              <button 
+                onClick={handleLogout} 
+                className={`${styles.dropdownItem} ${styles.logoutButton}`} 
+                role="menuitem" 
+                type="button"
+              >
                 <LogOut size={16} /> <span>Logout</span>
               </button>
             </div>

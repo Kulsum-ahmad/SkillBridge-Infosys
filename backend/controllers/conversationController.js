@@ -2,7 +2,8 @@ import Conversation from "../models/Conversation.js";
 import Message from "../models/Message.js";
 import User from "../models/User.js";
 import Application from "../models/Application.js";
-import { emitNewConversation } from "../socket/socketHandler.js";
+import { emitNewConversation, emitNotification } from "../socket/socketHandler.js";
+import { createNotification } from "./notificationController.js";
 
 /* ========================================================
    ✅ 1. Get all conversations for logged-in user
@@ -109,6 +110,36 @@ export const getOrCreateConversation = async (req, res) => {
 
     // Emit conversation:new event to both participants
     await emitNewConversation(conversation);
+
+    // Create notifications for both participants about new conversation
+    const participants = conversation.participants;
+    if (participants.length === 2) {
+      const notificationPromises = participants.map(async (participant) => {
+        const otherParticipant = participants.find(p => p._id.toString() !== participant._id.toString());
+        if (otherParticipant) {
+          const otherName = otherParticipant.fullName || otherParticipant.organizationName || "Someone";
+          const notification = await createNotification({
+            userId: participant._id.toString(),
+            type: "new_conversation",
+            title: "New Conversation Started",
+            message: `You started a conversation with ${otherName}. Start chatting!`,
+            relatedEntity: {
+              type: "conversation",
+              id: conversation._id,
+            },
+            metadata: {
+              otherParticipantId: otherParticipant._id.toString(),
+              otherParticipantName: otherName,
+            },
+          });
+
+          if (notification) {
+            await emitNotification(notification);
+          }
+        }
+      });
+      await Promise.all(notificationPromises);
+    }
 
     res.status(201).json({
       success: true,

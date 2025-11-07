@@ -18,6 +18,8 @@ import uploadRoutes from "./routes/upload.js";
 import applicationRoutes from "./routes/applicationRoutes.js";
 import conversationRoutes from "./routes/conversationRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
+import onlineRoutes from "./routes/onlineRoutes.js";
 
 // 📍 Fix __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -95,6 +97,21 @@ app.use("/api/upload", uploadRoutes);
 app.use("/api/applications", applicationRoutes);
 app.use("/api/conversations", conversationRoutes);
 app.use("/api/messages", messageRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/online-users", onlineRoutes);
+
+// Log all registered routes for debugging
+console.log("📋 Registered API routes:");
+console.log("  - /api/auth");
+console.log("  - /api/users");
+console.log("  - /api/profile");
+console.log("  - /api/opportunities");
+console.log("  - /api/upload");
+console.log("  - /api/applications");
+console.log("  - /api/conversations");
+console.log("  - /api/messages");
+console.log("  - /api/notifications");
+console.log("  - /api/online-users");
 
 // 🏠 Root API route
 app.get("/", (req, res) => {

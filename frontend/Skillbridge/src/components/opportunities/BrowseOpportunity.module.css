@@ -14,9 +14,6 @@
   font-family: sans-serif;
 }
 
-/* ----------------------------------------------------
-   2. Hero Section
-   ---------------------------------------------------- */
 .heroContent {
   max-width: 1280px;
   margin: 0;
@@ -74,8 +71,8 @@
   left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
+  width: 14px;
+  height: 14px;
   color: #9ca3af; /* Gray-400 */
 }
 

@@ -133,10 +133,8 @@ export default function OpportunityManagementPage() {
         <div className={styles.titleSection}>
           <div className={styles.headerTop}>
           </div>
-          <h1 className={styles.title}>Opportunity Management</h1>
-          <div className={styles.titleSeparator}></div>
           <p className={styles.subtitle}>
-            Manage and create volunteer opportunities for your organization.
+           Create and manage opportunities
           </p>
         </div>
         <Button
@@ -211,6 +209,7 @@ export default function OpportunityManagementPage() {
                     <Users className={styles.iconSmall} /> View Applications
                   </Button>
                 </div>
+                
               ))}
             </div>
           )}

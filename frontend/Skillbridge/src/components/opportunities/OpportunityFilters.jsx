@@ -1,4 +1,3 @@
-// OpportunityFilters.jsx
 import { Search, SlidersHorizontal } from "lucide-react";
 import { Input } from "../ui/input";
 import {
@@ -6,21 +5,43 @@ import {
   SelectTrigger,
   SelectValue,
   SelectContent,
-  SelectItem,
+  SelectItem
 } from "../ui/select";
-import styles from './OpportunityFilters.module.css';
+import styles from "./OpportunityFilters.module.css";
 
-const categories = ["all", "education", "healthcare", "environment", "community", "technology"];
+const categories = [
+  { label: "All", value: "all" },
+  { label: "Education", value: "education" },
+  { label: "Healthcare", value: "healthcare" },
+  { label: "Environment", value: "environment" },
+  { label: "Community", value: "community" },
+  { label: "Technology", value: "technology" }
+];
 
-export function OpportunityFilters({ searchTerm, onSearchChange, category, onCategoryChange, sortBy, onSortChange }) {
+const sortOptions = [
+  { label: "Newest First", value: "newest" },
+  { label: "Deadline (Closest)", value: "deadline" },
+  { label: "Most Applicants", value: "applicants" },
+  { label: "Location", value: "location" }
+];
+
+export function OpportunityFilters({
+  searchTerm,
+  onSearchChange,
+  category,
+  onCategoryChange,
+  sortBy,
+  onSortChange
+}) {
   return (
     <div className={styles.container}>
       <div className={styles.filtersWrapper}>
-
-        {/* Search Input */}
+        
+        {/* Search */}
         <div className={styles.searchContainer}>
           <Search className={styles.searchIcon} />
-          <Input
+          <input
+            type="text"
             placeholder="Search opportunities..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
@@ -28,33 +49,31 @@ export function OpportunityFilters({ searchTerm, onSearchChange, category, onCat
           />
         </div>
 
-        {/* Category Select */}
-        <Select value={category} onValueChange={onCategoryChange}>
-          <SelectTrigger className={styles.selectTrigger}>
-            <SelectValue placeholder="Category" />
-          </SelectTrigger>
-          <SelectContent>
-            {categories.map(cat => (
-              <SelectItem key={cat} value={cat}>
-                {cat.charAt(0).toUpperCase() + cat.slice(1)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        {/* Category Dropdown */}
+        <select
+          value={category}
+          onChange={(e) => onCategoryChange(e.target.value)}
+          className={styles.selectDropdown}
+        >
+          {categories.map((cat) => (
+            <option key={cat.value} value={cat.value}>
+              {cat.label}
+            </option>
+          ))}
+        </select>
 
-        {/* Sort By Select */}
-        <Select value={sortBy} onValueChange={onSortChange}>
-          <SelectTrigger className={styles.selectTrigger}>
-            <SlidersHorizontal className={styles.sortIcon} />
-            <SelectValue placeholder="Sort by" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="newest">Newest First</SelectItem>
-            <SelectItem value="deadline">Deadline (Closest)</SelectItem>
-            <SelectItem value="applicants">Most Applicants</SelectItem>
-            <SelectItem value="location">Location</SelectItem>
-          </SelectContent>
-        </Select>
+        {/* Sort Dropdown */}
+        <select
+          value={sortBy}
+          onChange={(e) => onSortChange(e.target.value)}
+          className={styles.selectDropdown}
+        >
+          {sortOptions.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
 
       </div>
     </div>

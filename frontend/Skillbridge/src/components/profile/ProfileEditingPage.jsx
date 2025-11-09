@@ -224,15 +224,6 @@ export default function ProfileEditingPage({ userType: propUserType }) {
 
   return (
       <div className={styles.container}>
-        <div className={styles.pageHeader}>
-          <h1 className={styles.pageTitle}>Edit Profile</h1>
-          <p className={styles.pageSubtitle}>
-            {userType === "ngo" 
-              ? "Manage your organization's information" 
-              : "Update your personal information and skills"}
-          </p>
-        </div>
-
         <ProfileProgressBar progress={calculateProgress()} />
 
         <div className={styles.profileCard}>

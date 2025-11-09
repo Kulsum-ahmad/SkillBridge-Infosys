@@ -215,15 +215,6 @@ const BrowseOpportunity = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.heroSection}>
-        <div className={styles.heroContent}>
-          <h1 className={styles.heroTitle}>Browse Opportunities</h1>
-          <p className={styles.heroSubtitle}>
-            Discover meaningful volunteer opportunities that match your skills and passion
-          </p>
-        </div>
-      </div>
-
       <div className={styles.searchBarWrapper}>
         <div className={styles.searchBar}>
           <input

@@ -624,14 +624,15 @@ export default function MessagePopup() {
       transition: "background 0.2s",
     },
     messageLeft: { flex: 1, marginRight: "8px" },
-    messageName: { fontWeight: "600", fontSize: "14px", color: "#111827" },
-    messageType: { fontSize: "12px", color: "#6b7280", marginBottom: "4px" },
+    messageName: { fontWeight: "600", fontSize: "16px", color: "#111827" },
+    messageType: { fontSize: "13px", color: "#6b7280", marginBottom: "4px", marginLeft: "20px" },
     messagePreview: {
-      fontSize: "13px",
-      color: "#374151",
+      fontSize: "14px",
+      color: "black",
       overflow: "hidden",
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
+      marginLeft: "20px",
     },
     time: { fontSize: "11px", color: "#9ca3af" },
     unreadBadge: {
@@ -763,7 +764,7 @@ export default function MessagePopup() {
                       ) ? (
                         <span style={{ color: "#10b981" }}>Online</span>
                       ) : (
-                        <span style={{ color: "#9ca3af" }}>
+                        <span style={{ color: "#fff" }}>
                           Last seen {formatTime(selectedChat.lastMessageAt)}
                         </span>
                       )}

@@ -167,14 +167,17 @@
 
 .cancelButton {
   transition: all 150ms ease-in-out;
-  padding: 1rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding: 0.5rem 1rem;
 }
+
+.cancelButton:hover{
+    cursor: pointer;
+} 
 
 .saveButton {
   /* hover:shadow-lg hover:scale-105 transition-all */
   transition: all 150ms ease-in-out;
+  padding: 0.2rem 1rem;
 }
 
 .saveButton:hover{

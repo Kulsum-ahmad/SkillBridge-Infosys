@@ -402,8 +402,8 @@ export default function ProfileEditingPage({ userType: propUserType }) {
           </Tabs>
 
           <div className={styles.saveFooter}>
-            <Button variant="outline" type="button" onClick={handleCancel}>Cancel</Button>
-            <Button onClick={handleSave} disabled={isSaving}>
+            <Button variant="outline" type="button" onClick={handleCancel} className={styles.cancelButton}>Cancel</Button>
+            <Button variant="outline" onClick={handleSave} disabled={isSaving} className={styles.saveButton}>
               {isSaving ? "Saving..." : "Save Changes"}
             </Button>
           </div>

@@ -1,6 +1,6 @@
-# VolunteerConnect (formerly SkillBridge)
+# SkillBridge
 
-A robust MERN-stack platform designed to seamlessly connect non-governmental organizations (NGOs) with global volunteers through integrated dashboards and interactive management tools. Developed as part of the **Infosys Springboard Remote Internship** (09/2025 - 11/2025) by an Agile team of 6 engineers.
+A robust MERN-stack platform designed to seamlessly connect non-governmental organizations (NGOs) with global volunteers through integrated dashboards and interactive management tools. Developed as part of the **Infosys Springboard Virtual Internship 6.0** (09/2025 - 11/2025) by an Agile team of 6 engineers.
 
 ---
 

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Loader, Building2, Mail, Globe, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
 import MessagePopup from '../MessagePopup.jsx';
+import dashboardStyles from "./dashboard.module.css"
 
 // --- Centralized API Logic ---
 const api = axios.create({
@@ -217,7 +218,29 @@ const Dashboard = () => {
                     }
                 }
                 
-                if (userData) {
+               if (userData) {
+                    // ✅ Force sync with the latest Profile data to grab the updated name
+                    try {
+                        const profileRes = await api.get('/profile/me');
+                        const latestProfile = profileRes.data?.data || profileRes.data || {};
+                        
+                        // Overwrite the stale auth name with the fresh profile name
+                        if (latestProfile.name) {
+                            userData.fullName = latestProfile.name;
+                            userData.name = latestProfile.name;
+                        }
+                        if (latestProfile.organization) {
+                            userData.organizationName = latestProfile.organization;
+                        }
+                        // ✅ ADD THIS: Sync the website too!
+                        if (latestProfile.website) {
+                            userData.website = latestProfile.website;
+                            userData.websiteUrl = latestProfile.website;
+                        }
+                    } catch (err) {
+                        console.warn("Could not sync latest profile name", err);
+                    }
+
                     setUser(userData);
                     const userType = (userData.userType || userData.role || '').toLowerCase();
                     console.log("📋 User Type:", userType);
@@ -634,32 +657,38 @@ const Dashboard = () => {
         ? "Here's an overview of your volunteer activity."
         : "Here's an overview of your organization's impact.";
 
+    
     return (
-        <div style={styles.dashboard}>
-            <h2 style={styles.welcomeHeader}>
-                Welcome back, {user.fullName || user.name || user.organizationName || 'User'}!
-            </h2>
-            <p style={styles.welcomeText}>{welcomeMessage}</p>
+        <div className={dashboardStyles.dashboard}>
+        <h2 className={dashboardStyles.welcomeHeader}>
+            Welcome back, {user.fullName || user.name || user.organizationName || 'User'}!
+        </h2>
+        <p className={dashboardStyles.welcomeText}>{welcomeMessage}</p>
 
-            {isNGO && <NGOProfileCard ngoData={user} />}
+        {isNGO && <NGOProfileCard ngoData={user} />}
 
-            <div style={styles.metricsGrid}>
-                {dashboardData.metrics && dashboardData.metrics.length > 0 ? (
-                    dashboardData.metrics.map((metric, index) => (
-                        <MetricCard key={index} {...metric} />
-                    ))
-                ) : (
-                    <div style={styles.emptyState}>Loading metrics...</div>
-                )}
-            </div>
-
-            <div style={styles.bottomSection}>
-                <RecentActivity activities={dashboardData.recentActivity} />
-                <UpcomingEvents events={dashboardData.upcomingEvents} isNGO={isNGO} />
-            </div>
-            <MessagePopup />
+        {/* Use the module class here instead of inline style */}
+        <div className={dashboardStyles.metricsGrid}>
+            {dashboardData.metrics && dashboardData.metrics.length > 0 ? (
+                dashboardData.metrics.map((metric, index) => (
+                    /* Wrap the card in a div to ensure the grid handles it correctly */
+                    <div key={index}>
+                        <MetricCard {...metric} />
+                    </div>
+                ))
+            ) : (
+                <div style={styles.emptyState}>Loading metrics...</div>
+            )}
         </div>
-    );
+
+        {/* Use the module class here too */}
+        <div className={dashboardStyles.bottomSection}>
+            <RecentActivity activities={dashboardData.recentActivity} />
+            <UpcomingEvents events={dashboardData.upcomingEvents} isNGO={isNGO} />
+        </div>
+        <MessagePopup />
+    </div>
+);
 };
 
 export default Dashboard;

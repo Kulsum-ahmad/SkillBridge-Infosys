@@ -107,11 +107,21 @@ export const updateProfile = async (req, res) => {
     }
 
     // Sync location to User model if updated
-    if (location && location !== profile.user.location) {
-      await User.findByIdAndUpdate(req.user.id, { location });
+    // ✅ Sync name, email, and location to base User model to fix stale data in chats/applications
+    const userUpdates = {};
+    if (name && name !== profile.user.fullName) userUpdates.fullName = name;
+    if (email && email !== profile.user.email) userUpdates.email = email;
+    if (location && location !== profile.user.location) userUpdates.location = location;
+    if (organization && organization !== profile.user.organizationName) userUpdates.organizationName = organization;
+
+    if (Object.keys(userUpdates).length > 0) {
+      await User.findByIdAndUpdate(req.user.id, userUpdates);
     }
 
-    res.status(200).json(profile);
+    // Re-populate to get the freshest data before sending response
+    const finalProfile = await Profile.findById(profile._id).populate('user', 'email userType location fullName');
+
+    res.status(200).json(finalProfile);
   } catch (error) {
     console.error('Update profile error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
-import skillBridgeLogo from "../assets/cd12bfb4f77c3986715b08d851b34fa45144098e.png";
+import skillBridgeLogo from "../assets/sbci.png";
 
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@_]).{8,}$/;
 

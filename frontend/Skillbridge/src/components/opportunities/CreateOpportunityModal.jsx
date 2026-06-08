@@ -252,7 +252,7 @@ export function CreateOpportunityModal({
                   }}
                   placeholder="Add a skill and press Enter or click Add"
                 />
-                <Button type="button" onClick={addSkill}>
+                <Button type="button" onClick={addSkill} className={styles.addSkillBtn}>
                   Add
                 </Button>
               </div>

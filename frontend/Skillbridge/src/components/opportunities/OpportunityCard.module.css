@@ -1,6 +1,7 @@
 .card {
   border: 1px solid #ececec;
   transition: all 0.2s ease-in-out;
+  overflow: hidden;
 }
 
 .card:hover {
@@ -11,6 +12,7 @@
 /* Header */
 .cardHeader {
   padding-bottom: 0.25rem;
+  padding-top: 2.5rem;
 }
 
 .titleRow {
@@ -123,3 +125,49 @@
   height: 16px;
 }
 
+/* --- Guaranteed Corner Clipping --- */
+.card {
+  border: 1px solid #ececec;
+  border-radius: 1rem !important; /* Force the rounding */
+  overflow: hidden !important; /* Force the clipping */
+  transition: all 0.2s ease-in-out;
+}
+
+.cardFooter {
+  border-top: 1px solid #f1f5f9;
+  padding-top: 0.5rem;
+  /* Make sure the footer also respects the bottom curves */
+  border-bottom-left-radius: 1rem; 
+  border-bottom-right-radius: 1rem;
+}
+
+/* --- Action Button Styles & Hover Effects --- */
+.actionBtn {
+  padding: 0.375rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.editBtn {
+  color: #d97706; /* Amber/Yellow text */
+}
+
+.editBtn:hover {
+  background-color: #fef3c7; /* Light amber/yellow background on hover */
+  transform: scale(1.05); /* Optional: tiny pop effect on hover */
+}
+
+.deleteBtn {
+  color: #dc2626; /* Red text */
+}
+
+.deleteBtn:hover {
+  background-color: #fee2e2; /* Light red background on hover */
+  transform: scale(1.05);
+}

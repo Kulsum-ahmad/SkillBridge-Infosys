@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import skillBridgeLogo from "figma:asset/cd12bfb4f77c3986715b08d851b34fa45144098e.png";
+import skillbridgeLogo from "../../assets/sbci.png";
 import {
     FaHome,
     FaUserEdit,
@@ -64,7 +64,7 @@ const Sidebar = ({ demoMode }) => {
             <div className={styles.brand}>
                 <div className={styles.logoContainer}>
                     <img
-                        src={skillBridgeLogo}
+                        src={skillbridgeLogo}
                         alt="SkillBridge Logo"
                         className={styles.logo}
                     />

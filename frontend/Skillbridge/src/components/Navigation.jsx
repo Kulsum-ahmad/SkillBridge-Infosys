@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import skillBridgeLogo from "figma:asset/cd12bfb4f77c3986715b08d851b34fa45144098e.png";
+import skillbridgeLogo from "../assets/sbci.png";
 
 export function Navigation({ onOpenModal }) {
   const navigate = useNavigate();
@@ -61,7 +61,7 @@ export function Navigation({ onOpenModal }) {
         <a href="/" className="flex items-center text-black no-underline">
           <div className="h-14 w-14 rounded-full bg-white backdrop-blur-sm border-2 border-white/50 overflow-hidden mr-3 shadow-lg p-1">
             <img
-              src={skillBridgeLogo}
+              src={skillbridgeLogo}
               alt="SkillBridge Logo"
               className="h-full w-full object-contain rounded-full"
             />

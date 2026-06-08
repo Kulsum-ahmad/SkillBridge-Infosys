@@ -13,7 +13,7 @@ import { initializeSocket } from "./socket/socketHandler.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
-import opportunityRoutes from "./routes/opportunity.routes.js";
+import opportunityRoutes from "./routes/opportunityRoutes.js";
 import uploadRoutes from "./routes/upload.js";
 import applicationRoutes from "./routes/applicationRoutes.js";
 import conversationRoutes from "./routes/conversationRoutes.js";

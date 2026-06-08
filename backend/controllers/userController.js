@@ -105,6 +105,7 @@ export const loginUser = async (req, res) => {
     });
   } catch (error) {
     console.error("Login error:", error);
+    console.log("VOLUNTEER REGISTRATION ERROR:", error);
     res.status(500).json({ success: false, message: "Server error." });
   }
 };

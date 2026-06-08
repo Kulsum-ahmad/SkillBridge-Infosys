@@ -1,4 +1,4 @@
-import skillBridgeTeamImage from 'figma:asset/fc60daf4995a4621dd27f5c61d3f0965aa04eaef.png';
+import SkillBridgeTeamImage from '../assets/about_sb.png';
 
 export function About() {
   return (
@@ -31,7 +31,7 @@ export function About() {
           
           <div className="text-center">
             <img 
-              src={skillBridgeTeamImage}
+              src={SkillBridgeTeamImage}
               alt="SkillBridge connecting volunteers with NGOs across different skill domains" 
               className="w-full max-w-lg rounded-2xl shadow-2xl object-contain"
             />

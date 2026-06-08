@@ -222,8 +222,9 @@
 }
 
 .cardGrid > *:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-xl);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
 }
 
 /* --- Empty State Placeholder Styles --- */
@@ -560,6 +561,6 @@
   border-radius: 0.5rem;
   font-weight: 500;
   transition: background-color 0.3s ease;
-  margin-top: 1rem;
+  /* margin-top: 1rem; ✅ REMOVE THIS LINE */
   cursor: pointer;
 }

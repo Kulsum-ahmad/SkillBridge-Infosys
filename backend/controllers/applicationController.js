@@ -4,6 +4,7 @@ import User from "../models/User.js";
 import Conversation from "../models/Conversation.js";
 import { emitNewConversation, emitNotification } from "../socket/socketHandler.js";
 import { createNotification } from "./notificationController.js";
+import Profile from "../models/Profile.js";
 import path from "path";
 import mongoose from "mongoose";
 
@@ -16,10 +17,16 @@ export const createApplication = async (req, res) => {
     const userId = req.user._id;
 
     // 🧠 Validate user existence
+    // 🧠 Validate user existence and get their freshest profile name
     const user = await User.findById(userId).select("fullName email");
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
+    
+    // Check if they have an updated profile name
+    const profile = await Profile.findOne({ user: userId }).select("name email");
+    const applicationName = profile?.name || user.fullName;
+    const applicationEmail = profile?.email || user.email;
 
     // ✅ Validate opportunity
     const opportunity = await Opportunity.findById(opportunityId);
@@ -54,11 +61,12 @@ export const createApplication = async (req, res) => {
     }
 
     // ✅ Create and save application
+    // ✅ Create and save application
     const newApplication = new Application({
       opportunity: opportunityId,
       user: userId,
-      name: user.fullName,
-      email: user.email,
+      name: applicationName, // Uses freshest profile name
+      email: applicationEmail, 
       motivation,
       resume: resumePath,
       status: "pending",

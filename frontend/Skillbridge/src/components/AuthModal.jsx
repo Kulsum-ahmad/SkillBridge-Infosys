@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'sonner';
-import skillBridgeLogo from '../assets/cd12bfb4f77c3986715b08d851b34fa45144098e.png'; 
+import skillBridgeLogo from '../assets/sbci.png'; 
 import VolunteerRegistrationForm from './VolunteerRegistrationForm';
 import OrganizationRegistrationForm from './OrganizationRegistrationForm';
 

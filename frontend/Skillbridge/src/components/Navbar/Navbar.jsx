@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { User, Settings, LogOut, ChevronDown } from 'lucide-react';
 import styles from './navbar.module.css';
@@ -14,6 +14,16 @@ const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  let pageTitle = "Dashboard";
+  if (location.pathname.includes('profile')) {
+    pageTitle = "Edit Profile";
+  } else if (location.pathname.includes('opportunity-management')) {
+    pageTitle = "Opportunity Management";
+  } else if (location.pathname.includes('opportunities')) {
+    pageTitle = "Browse Opportunities";
+  }
 
   // Role mapping
   const roleDisplay = {
@@ -97,7 +107,7 @@ const Navbar = () => {
       {/* LEFT SECTION */}
       <div className={styles.leftSection}>
         <div className={styles.titleContainer}>
-          <h1 className={styles.title}>Dashboard</h1>
+          <h1 className={styles.title}>{pageTitle}</h1>
         </div>
         <div className={styles.modeStatusContainer}>
           <span className={styles.modeLabel}>Mode:</span>

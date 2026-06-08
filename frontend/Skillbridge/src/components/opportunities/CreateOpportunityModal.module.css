@@ -186,3 +186,65 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* --- Skills Input & Badges --- */
+.skillInputWrapper {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.skillBadgeContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+/* Matches your expectation image exactly */
+.skillBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background-color: #ffffff !important; /* Force white background */
+  border: 1px solid #d1d5db !important; /* Gray border */
+  color: #374151 !important; /* Dark gray text */
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+.removeSkillBtn {
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-left: 0.25rem;
+  transition: color 0.2s;
+}
+
+.removeSkillBtn:hover {
+  color: #ef4444; /* Turns red on hover */
+}
+
+.helperText {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+/* --- Fix for Add Button Cursor --- */
+.addSkillBtn {
+  cursor: pointer !important;
+}
+
+/* --- Fix for Category Dropdown Hover Color --- */
+:global([data-slot="select-item"][data-highlighted]) {
+  background-color: #f3f4f6 !important; /* Light gray background */
+  color: #0652f6 !important; /* Dark text */
+  transition: background-color 0.15s ease-in-out;
+}

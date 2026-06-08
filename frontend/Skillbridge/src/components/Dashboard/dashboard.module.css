@@ -24,9 +24,12 @@
 /* --- METRIC CARDS GRID --- */
 .metricsGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* Four equal columns */
+  /* Use auto-fill with a fixed max to prevent cards from over-expanding */
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
   gap: 20px;
   margin-bottom: 30px;
+  width: 100%;
+  align-items: stretch;
 }
 
 .metricCard {
@@ -120,8 +123,11 @@
 /* --- BOTTOM SECTION LAYOUT --- */
 .bottomSection {
   display: grid;
-  grid-template-columns: 2fr 1fr; /* Activity is wider, Events is narrower */
+  /* 2fr 1fr is good, but let's ensure it doesn't break on smaller screens */
+  grid-template-columns: 2fr 1fr; 
   gap: 20px;
+  width: 100%;
+  margin-top: 10px;
 }
 
 .sectionTitle {
@@ -210,4 +216,10 @@
   margin: 0;
   font-size: 12px;
   text-align: right;
+}
+
+.activityBox, .eventsBox {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }

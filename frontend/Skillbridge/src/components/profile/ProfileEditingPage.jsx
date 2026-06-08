@@ -194,6 +194,16 @@ export default function ProfileEditingPage({ userType: propUserType }) {
       
       // Dispatch event to update navbar
       window.dispatchEvent(new CustomEvent("profile_updated", { detail: { image: updatedProfile.image } }));
+      // ✅ Update localStorage so the whole app knows the new name instantly
+      try {
+        const storedUser = JSON.parse(localStorage.getItem("sb_user") || "{}");
+        storedUser.fullName = updatedProfile.name;
+        storedUser.name = updatedProfile.name;
+        if (updatedProfile.organization) storedUser.organizationName = updatedProfile.organization;
+        localStorage.setItem("sb_user", JSON.stringify(storedUser));
+      } catch (e) {
+        console.error("Failed to update local storage:", e);
+      }
       
       setShowConfirmation(true);
       setTimeout(() => setShowConfirmation(false), 2000);
@@ -262,7 +272,7 @@ export default function ProfileEditingPage({ userType: propUserType }) {
                       value={profile.organization}
                       onChange={(e) => handleFieldChange("organization", e.target.value)}
                       onBlur={() => handleBlur("organization")}
-                      className={errors.organization && touched.organization ? styles.inputError : ""}
+                      className={`${styles.inputStyle} ${errors.name && touched.name ? styles.inputError : ""}`}
                       placeholder="Organization name"
                     />
                     {errors.organization && touched.organization && <p className={styles.errorText}>{errors.organization}</p>}
@@ -276,8 +286,8 @@ export default function ProfileEditingPage({ userType: propUserType }) {
                     value={profile.name}
                     onChange={(e) => handleFieldChange("name", e.target.value)}
                     onBlur={() => handleBlur("name")}
-                    className={errors.name && touched.name ? styles.inputError : ""}
-                    placeholder="Full Name"
+                    className={`${styles.inputStyle} ${errors.name && touched.name ? styles.inputError : ""}`}
+  placeholder="Full Name"
                   />
                   {errors.name && touched.name && <p className={styles.errorText}>{errors.name}</p>}
                 </div>
@@ -290,7 +300,7 @@ export default function ProfileEditingPage({ userType: propUserType }) {
                     value={profile.email}
                     onChange={(e) => handleFieldChange("email", e.target.value)}
                     onBlur={() => handleBlur("email")}
-                    className={errors.email && touched.email ? styles.inputError : ""}
+                    className={`${styles.inputStyle} ${errors.name && touched.name ? styles.inputError : ""}`}
                     placeholder="your.email@example.com"
                   />
                   {errors.email && touched.email && <p className={styles.errorText}>{errors.email}</p>}
@@ -304,7 +314,7 @@ export default function ProfileEditingPage({ userType: propUserType }) {
                     value={profile.phone}
                     onChange={(e) => handleFieldChange("phone", e.target.value)}
                     onBlur={() => handleBlur("phone")}
-                    className={errors.phone && touched.phone ? styles.inputError : ""}
+                    className={`${styles.inputStyle} ${errors.name && touched.name ? styles.inputError : ""}`}
                     placeholder="+1 555-123-4567"
                   />
                   {errors.phone && touched.phone && <p className={styles.errorText}>{errors.phone}</p>}
@@ -316,6 +326,7 @@ export default function ProfileEditingPage({ userType: propUserType }) {
                     id="location"
                     value={profile.location}
                     onChange={(e) => handleFieldChange("location", e.target.value)}
+                    className={`${styles.inputStyle} ${errors.name && touched.name ? styles.inputError : ""}`}
                     placeholder="City, Country"
                   />
                 </div>
@@ -328,6 +339,7 @@ export default function ProfileEditingPage({ userType: propUserType }) {
                       type="url"
                       value={profile.website}
                       onChange={(e) => handleFieldChange("website", e.target.value)}
+                      className={`${styles.inputStyle} ${errors.name && touched.name ? styles.inputError : ""}`}
                       placeholder="https://www.example.org"
                     />
                   </div>
@@ -345,14 +357,23 @@ export default function ProfileEditingPage({ userType: propUserType }) {
                         onChange={(e) => setCurrentSkill(e.target.value)}
                         onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addSkill())}
                         placeholder="Add a skill"
+                        className={styles.inputStyle} /* ✅ Added inputStyle here! */
                       />
-                      <Button type="button" onClick={addSkill}>Add</Button>
+                      <Button type="button" onClick={addSkill} className={styles.addButton}>
+                        Add
+                      </Button>
                     </div>
                     <div className={styles.skillBadgeContainer}>
                       {profile.skills.map((skill) => (
-                        <Badge key={skill}>
+                        <Badge key={skill} className={styles.skillBadge}> {/* ✅ Added skillBadge class! */}
                           {skill}
-                          <button type="button" onClick={() => removeSkill(skill)}><X size={12} /></button>
+                          <button 
+                            type="button" 
+                            onClick={() => removeSkill(skill)} 
+                            className={styles.removeSkillButton} /* ✅ Added remove hover effect! */
+                          >
+                            <X size={14} />
+                          </button>
                         </Badge>
                       ))}
                     </div>
@@ -364,7 +385,9 @@ export default function ProfileEditingPage({ userType: propUserType }) {
                       id="experience"
                       value={profile.experience}
                       onChange={(e) => handleFieldChange("experience", e.target.value)}
-                      rows={6}
+                      onBlur={() => handleBlur("experience")}
+                      rows={8}
+                      className={`${styles.textareaStyle} ${errors.bio && touched.bio ? styles.inputError : ""}`}
                       placeholder="Describe your experience..."
                     />
                   </div>
@@ -380,6 +403,8 @@ export default function ProfileEditingPage({ userType: propUserType }) {
                     onChange={(e) => handleFieldChange("bio", e.target.value)}
                     onBlur={() => handleBlur("bio")}
                     rows={8}
+                    
+                    className={`${styles.inputStyle} ${errors.name && touched.name ? styles.inputError : ""}`}
                     placeholder={userType === "ngo" ? "Tell us about your organization (minimum 50 characters)..." : "Tell us about yourself (minimum 50 characters)..."}
                   />
                   {errors.bio && touched.bio && <p className={styles.errorText}>{errors.bio}</p>}
@@ -394,6 +419,7 @@ export default function ProfileEditingPage({ userType: propUserType }) {
                     id="availability"
                     value={profile.availability}
                     onChange={(e) => handleFieldChange("availability", e.target.value)}
+                    className={`${styles.inputStyle} ${errors.name && touched.name ? styles.inputError : ""}`}
                     placeholder="e.g., Weekends, 10-15 hrs/week"
                   />
                 </div>

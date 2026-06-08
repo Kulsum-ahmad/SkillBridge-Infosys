@@ -47,29 +47,20 @@ export default function OpportunityManagementPage() {
   }, []);
 
   // ✅ Create or update opportunity
-  const handleSaveOpportunity = async (data) => {
-    try {
-      if (editOpportunity?._id) {
-        const response = await api.put(`/opportunities/${editOpportunity._id}`, data);
-        setOpportunities((prev) =>
-          prev.map((o) => (o._id === editOpportunity._id ? response.data : o))
-        );
-        toast.success("Opportunity updated successfully!");
-      } else {
-        const response = await api.post("/opportunities", data);
-        setOpportunities((prev) => [response.data, ...prev]);
-        toast.success("Opportunity created successfully!");
-      }
-      setShowModal(false);
-      setEditOpportunity(null);
-    } catch (error) {
-      console.error("Save error:", error);
-      if (error.response?.status === 401) {
-        toast.error("Authentication failed. Please login again.");
-      } else {
-        toast.error(error.response?.data?.message || "Failed to save opportunity");
-      }
+  // ✅ Create or update opportunity UI State (API call is handled in Modal)
+  const handleSaveOpportunity = (savedOpportunity) => {
+    // Check if we were editing an existing opportunity
+    if (editOpportunity?._id) {
+      setOpportunities((prev) =>
+        prev.map((o) => (o._id === editOpportunity._id ? savedOpportunity : o))
+      );
+    } else {
+      // If new, add it to the top of the list
+      setOpportunities((prev) => [savedOpportunity, ...prev]);
     }
+    
+    setShowModal(false);
+    setEditOpportunity(null);
   };
 
   // ✅ Delete opportunity
@@ -190,14 +181,17 @@ export default function OpportunityManagementPage() {
           ) : (
             <div className={styles.cardGrid}>
               {filteredOpportunities.map((o) => (
-                <div key={o._id} className={styles.cardWrapper}>
+                <div key={o._id} className={`${styles.cardWrapper} relative h-full flex flex-col`}>
                   <OpportunityCard
+                  key={o._id}
                     opportunity={o}
+                    currentUserRole="ngo"
                     onEdit={(opp) => {
                       setEditOpportunity(opp);
                       setShowModal(true);
                     }}
                     onDelete={setDeleteId}
+                    onViewApplications={(id) => navigate(`/opportunity/${id}/applications`)}
                   />
 
                   {/* ✅ View Applications */}

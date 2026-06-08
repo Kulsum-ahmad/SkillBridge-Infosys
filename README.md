@@ -11,7 +11,7 @@ While working within an Agile engineering workflow, I focused heavily on UI/UX o
 * **API Integration:** Consumed and integrated complex backend REST APIs to seamlessly connect our frontend components with database operations.
 
 ## 🛠️ Tech Stack
-* **Frontend:** React.js, Tailwind CSS, JavaScript (ES6+), Figma (UI/UX Design)
+* **Frontend:** React.js, CSS Modules, JavaScript (ES6+), Figma (UI/UX Design)
 * **Backend:** Node.js, Express.js, REST APIs
 * **Database & Real-time:** MongoDB, WebSockets / Socket.io
 * **Workflow & Tools:** Git, GitHub, Agile/Scrum

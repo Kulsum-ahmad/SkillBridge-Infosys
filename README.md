@@ -48,4 +48,4 @@ While working within an Agile engineering workflow, I focused heavily on UI/UX o
    npm run dev
 
 👥 Team & Acknowledgments
-    Special thanks to our Infosys Springboard mentors and my 5 amazing teammates who built the robust backend infrastructure and database schemas alongside me.
+    Special thanks to my Infosys Springboard mentor and my 5 amazing teammates who helped me in frontend infrastructure and built the robust backend infrastructure and database schemas alongside me.

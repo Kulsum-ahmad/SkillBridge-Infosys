@@ -7,7 +7,7 @@ A robust MERN-stack platform designed to seamlessly connect non-governmental org
 ## 🚀 My Contributions (Frontend Developer)
 While working within an Agile engineering workflow, I focused heavily on UI/UX optimization, version control, and core real-time feature implementation:
 * **Real-Time Communication:** Architected a bidirectional real-time chat system and an automated notification layer, successfully managing complex asynchronous application states.
-* **UI/UX Engineering:** Developed fully responsive, highly performant frontend interfaces using React.js and Tailwind CSS, reducing redundant rendering overhead.
+* **UI/UX Engineering:** Developed fully responsive, highly performant frontend interfaces using React.js and CSS modules, reducing redundant rendering overhead.
 * **API Integration:** Consumed and integrated complex backend REST APIs to seamlessly connect our frontend components with database operations.
 
 ## 🛠️ Tech Stack
